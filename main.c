@@ -6,21 +6,21 @@
 
 //SYSTEM SI
 int N_x=5000;
-int N_z=700;
-double x_begin=0,x_end=1000.0, z_begin=0,z_end=200000.0, x_receiver_end=70.0;
+int N_z=1000;
+double x_begin=0,x_end=750.0, z_begin=0,z_end=100000.0, x_receiver_end=70.0;
 double n_0 = 1.00028;
 double pol=1; // Polarization type: 1 for 'Horz.' or 0 for 'Vert.'
 
 // source parameters
-double source_height = 400.0;
-double gamma_horiz=7*3.14/180; //elv
-double gamma_rastvor=7*3.14/180; //bw
-double a_0 = 1.2e-6; // 2.4e-6;
-double sorce_frequency = 1.e8;
+double source_height = 250.0;
+double gamma_horiz=10*3.14/180; //elv
+double gamma_rastvor=0.5*3.14/180; //bw
+double a_0 =4e-6; //2.4e-6; // 1.2e-6
+double sorce_frequency = 3.e8;
 
 //linear function of refractive index
 void linear_refraction(complex double* refractive_index, double current_x,int l){
-    refractive_index [l] = 1 - a_0*current_x; //it is square refractive index n^2
+    refractive_index [l] = (1 - a_0*current_x)*(1 - a_0*current_x); //it is square refractive index n^2
 //    printf("endof: %1.7e\n", cabs(refractive_index[l]));
 }
 
@@ -175,7 +175,7 @@ int main() {
 
 
 
-    file = fopen("1.5.txt", "w+");
+    file = fopen("1_tilt.txt", "w+");
 
     if (file == NULL) {
         printf("FileIsNull\n");
