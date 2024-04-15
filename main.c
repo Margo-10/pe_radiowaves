@@ -20,7 +20,11 @@ double sorce_frequency = 3.e8;
 
 //linear function of refractive index
 void linear_refraction(complex double* refractive_index, double current_x,int l){
+<<<<<<< HEAD
+    refractive_index [l] = 1 + (315*cexp(-current_x*0.157))*1.e-6; //1 + (315*cexp(-current_x/7350))*1.e-6;//1 + (315-(-0.190)*(current_x-7350))*1.e-6;//(1 - a_0*current_x); //it is square refractive index n^2
+=======
     refractive_index [l] = (1 - a_0*current_x)*(1 - a_0*current_x); //it is square refractive index n^2
+>>>>>>> parent of 1a551cc (g)
 //    printf("endof: %1.7e\n", cabs(refractive_index[l]));
 }
 
