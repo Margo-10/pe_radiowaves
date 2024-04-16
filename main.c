@@ -6,26 +6,42 @@
 
 //SYSTEM SI
 int N_x=5000;
-int N_z=1000;
-double x_begin=0,x_end=750.0, z_begin=0,z_end=100000.0, x_receiver_end=70.0;
+int N_z=1800;
+double x_begin=0,x_end=1000.0, z_begin=0,z_end=100000.0, x_receiver_end=70.0;
 double n_0 = 1.00028;
 double pol=1; // Polarization type: 1 for 'Horz.' or 0 for 'Vert.'
 
 // source parameters
 double source_height = 250.0;
-double gamma_horiz=10*3.14/180; //elv
+double gamma_horiz=3*3.14/180; //elv
 double gamma_rastvor=0.5*3.14/180; //bw
-double a_0 =4e-6; //2.4e-6; // 1.2e-6
+double a_0=1.2e-6;//2.4e-6;
 double sorce_frequency = 3.e8;
+
+//ducting
+void duct_refraction(complex double* refractive_index, double current_x,int l){
+
+    refractive_index [l] = 1 - a_0*current_x; //it is square refractive index n^2
+
+//printf("endof: %1.7e\n", cabs(refractive_index[l]));
+}
+
+
+//exponential function of refractive index
+void exponential_refraction(complex double* refractive_index, double current_x,int l){
+
+    refractive_index [l] = 1 + (315*cexp(-current_x*0.015))*1.e-6; //(1 - a_0*current_x);  //it is square refractive index n^2
+
+//printf("endof: %1.7e\n", cabs(refractive_index[l]));
+}
+
 
 //linear function of refractive index
 void linear_refraction(complex double* refractive_index, double current_x,int l){
-<<<<<<< HEAD
-    refractive_index [l] = 1 + (315*cexp(-current_x*0.157))*1.e-6; //1 + (315*cexp(-current_x/7350))*1.e-6;//1 + (315-(-0.190)*(current_x-7350))*1.e-6;//(1 - a_0*current_x); //it is square refractive index n^2
-=======
-    refractive_index [l] = (1 - a_0*current_x)*(1 - a_0*current_x); //it is square refractive index n^2
->>>>>>> parent of 1a551cc (g)
-//    printf("endof: %1.7e\n", cabs(refractive_index[l]));
+
+    refractive_index [l] = pow((1 + (315-(-0.0392)*(current_x-7350))*1.e-6),2); //it is square refractive index n^2
+
+//printf("endof: %1.7e\n", cabs(refractive_index[l]));
 }
 
 
@@ -92,7 +108,7 @@ int main() {
 
     for (int j = 1; j < N_x-1; j++) {
         double current_x_1 = x_begin + j*dx;
-        array_u[0][j] = cexp(I*k_0*current_x_1*csin(gamma_horiz)-pow(current_x_1-source_height,2)/pow(source_omega,2)) + cpow(-1,pol)*cexp(I*k_0*(-current_x_1)*csin(gamma_horiz)-pow(-current_x_1-source_height,2)/pow(source_omega,2));
+        array_u[0][j] = cexp(I*k_0*current_x_1*csin(gamma_horiz)-pow(current_x_1-source_height,2)/pow(source_omega,2)) + pow(-1,pol)*cexp(I*k_0*(-current_x_1)*csin(gamma_horiz)-pow(-current_x_1-source_height,2)/pow(source_omega,2));
 //                + cexp(I*k_0*current_x_1*csin(gamma_horiz_1)-pow(current_x_1-source_height,2)/pow(source_omega,2)) + cpow(-1,pol)*cexp(I*k_0*(-current_x_1)*csin(gamma_horiz_1)-pow(-current_x_1-source_height,2)/pow(source_omega,2))
 //               +cexp(I*k_0*current_x_1*csin(gamma_horiz_2)-pow(current_x_1-source_height,2)/pow(source_omega,2)) + cpow(-1,pol)*cexp(I*k_0*(-current_x_1)*csin(gamma_horiz_2)-pow(-current_x_1-source_height,2)/pow(source_omega,2))
 //                +cexp(I*k_0*current_x_1*csin(gamma_horiz_3)-pow(current_x_1-source_height,2)/pow(source_omega,2)) + cpow(-1,pol)*cexp(I*k_0*(-current_x_1)*csin(gamma_horiz_3)-pow(-current_x_1-source_height,2)/pow(source_omega,2))
@@ -146,7 +162,9 @@ int main() {
                 // array_B[l]=B;
                 array_A[l] = A;
                 array_C[l] = C;
-                linear_refraction(refractive_index[k], current_x,l);
+                exponential_refraction(refractive_index[k], current_x,l);
+                //duct_refraction(refractive_index[k], current_x,l);
+                //linear_refraction(refractive_index[k], current_x,l);
                 //printf("%10.7e ",cabs(refractive_index[k][300]));
                 array_B[l] = -1.0 /(dx*dx) + (2.0*I*k_0)/dz + k_0*k_0*(refractive_index[k][l]-1.0);
                 array_D[l] = array_u[k-1][l]*(2.0 * I * k_0 /dz + 1.0/(dx*dx)-k_0*k_0*(refractive_index[k][l]-1.0)/2) - 1.0/(2.0*dx*dx)*(array_u[k-1][l+1] + array_u[k-1][l-1]);
