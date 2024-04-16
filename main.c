@@ -5,34 +5,31 @@
 
 
 //SYSTEM SI
-int N_x=5000;
-int N_z=1800;
-double x_begin=0,x_end=1000.0, z_begin=0,z_end=100000.0, x_receiver_end=70.0;
+int N_x=8000;
+int N_z=8000;
+double x_begin=0,x_end=750.0, z_begin=0,z_end=50000.0;
 double n_0 = 1.00028;
 double pol=1; // Polarization type: 1 for 'Horz.' or 0 for 'Vert.'
 
 // source parameters
-double source_height = 250.0;
-double gamma_horiz=3*3.14/180; //elv
-double gamma_rastvor=0.5*3.14/180; //bw
+double source_height = 200.0;
+double gamma_horiz=1*3.14/180; //elv
+double gamma_rastvor=0.35*3.14/180; //bw
 double a_0=1.2e-6;//2.4e-6;
-double sorce_frequency = 3.e8;
+double source_frequency = 1.e9;
 
 //ducting
 void duct_refraction(complex double* refractive_index, double current_x,int l){
 
     refractive_index [l] = 1 - a_0*current_x; //it is square refractive index n^2
 
-//printf("endof: %1.7e\n", cabs(refractive_index[l]));
 }
 
 
 //exponential function of refractive index
 void exponential_refraction(complex double* refractive_index, double current_x,int l){
 
-    refractive_index [l] = 1 + (315*cexp(-current_x*0.015))*1.e-6; //(1 - a_0*current_x);  //it is square refractive index n^2
-
-//printf("endof: %1.7e\n", cabs(refractive_index[l]));
+    refractive_index [l] = cpow ((1 + (315*cexp(-current_x/7350))*1.e-6),2);  //it is square refractive index n^2
 }
 
 
@@ -41,7 +38,6 @@ void linear_refraction(complex double* refractive_index, double current_x,int l)
 
     refractive_index [l] = pow((1 + (315-(-0.0392)*(current_x-7350))*1.e-6),2); //it is square refractive index n^2
 
-//printf("endof: %1.7e\n", cabs(refractive_index[l]));
 }
 
 
@@ -72,11 +68,9 @@ void tridiag_matrix_algorithm(complex double* array_A, complex double* array_B, 
 
 int main() {
     double dx = (x_end - x_begin) / N_x, dz = (z_end - z_begin) / N_z;
-    complex double k_0 = 2.0*M_PI*sorce_frequency/3.e8;
+    complex double k_0 = 2.0*M_PI*source_frequency/3.e8;
     complex double B = -1.0 /(dx*dx) + (2.0*I*k_0)/dz + k_0*k_0*(n_0*n_0-1.0)/2;
     complex double A = 1.0 /(2.0*dx*dx), C = 1.0 /(2.0*dx*dx);
-    double d_1= sqrt(z_end*z_end+pow((x_end-x_receiver_end),2)),d_2=sqrt(z_end*z_end+pow((x_end+x_receiver_end),2));
-    complex double Hankel_1 = sqrt(-2*I/M_PI)*exp(I*k_0*d_1)/sqrt(k_0*d_1),Hankel_2 = sqrt(-2*I/M_PI)*exp(I*k_0*d_2)/sqrt(k_0*d_2);
 
     FILE *file = NULL;
     complex double **array_u = malloc(N_z * sizeof(complex double*)); //the number of lines is multiplied by sizeof
@@ -127,12 +121,6 @@ int main() {
 
     }
 
-//    for (int i = 0; i < N_z; i++) {
-//        array_u[i][0]=;
-//        array_u[i][N_x-1]=0;
-//
-//    }
-
 
 
     for (int k=1; k<N_z; k++) {
@@ -162,8 +150,8 @@ int main() {
                 // array_B[l]=B;
                 array_A[l] = A;
                 array_C[l] = C;
-                exponential_refraction(refractive_index[k], current_x,l);
-                //duct_refraction(refractive_index[k], current_x,l);
+                //exponential_refraction(refractive_index[k], current_x,l);
+                duct_refraction(refractive_index[k], current_x,l);
                 //linear_refraction(refractive_index[k], current_x,l);
                 //printf("%10.7e ",cabs(refractive_index[k][300]));
                 array_B[l] = -1.0 /(dx*dx) + (2.0*I*k_0)/dz + k_0*k_0*(refractive_index[k][l]-1.0);
@@ -178,7 +166,7 @@ int main() {
 
         tridiag_matrix_algorithm(array_A, array_B, array_C, array_D, array_u[k]);
 
-        int h=round(0.75*(N_x));
+        int h = round(0.75*(N_x));
         //printf("%d\n",h);
         //Hanning window
         for (h; h< N_x; h++){
