@@ -2,20 +2,22 @@
 #include<stdlib.h>
 #include<complex.h>
 #include<math.h>
+#include<omp.h>
+#include<time.h>
 
 
 //SYSTEM SI
-int N_x=10000;
-int N_z=10000;
-double x_begin=0,x_end=5000.0, z_begin=0,z_end=50000.0;
+int N_x=1000;
+int N_z=5000;
+double x_begin=0,x_end=1000.0, z_begin=0,z_end=50000.0;
 double n_0 = 1.00028;
 double pol=1; // Polarization type: 1 for 'Horz.' or 0 for 'Vert.'
 
 // source parameters
-double source_height = 200.0;
+double source_height = 250.0;
 double gamma_horiz=1*3.14/180; //elv
 double gamma_rastvor=0.35*3.14/180; //bw
-double a_0=1.2e-6;//2.4e-6;
+double a_0 = 1.2e-6;//2.4e-6;
 double source_frequency = 3.e8;
 
 //ducting
@@ -48,6 +50,8 @@ void tridiag_matrix_algorithm(complex double* array_A, complex double* array_B, 
     alpha[0] = -array_A[0]/(array_B[0]);
     beta[0] = array_D[0]/(array_B[0]);
 
+
+
     for (int i=1; i<N_x; i++) {
 
         alpha[i] = -array_A[i]/(array_B[i]+array_C[i]*alpha[i-1]);
@@ -56,6 +60,7 @@ void tridiag_matrix_algorithm(complex double* array_A, complex double* array_B, 
     }
 
     array_u[N_x-1]=beta[N_x-1];
+
     for (int i = N_x - 1; i >= 0; i--) {
         array_u[i] = alpha[i] * array_u[i+1] + beta[i];
 
@@ -67,6 +72,7 @@ void tridiag_matrix_algorithm(complex double* array_A, complex double* array_B, 
 
 
 int main() {
+    clock_t start = clock();
     double dx = (x_end - x_begin) / N_x, dz = (z_end - z_begin) / N_z;
     complex double k_0 = 2.0*M_PI*source_frequency/3.e8;
     complex double B = -1.0 /(dx*dx) + (2.0*I*k_0)/dz + k_0*k_0*(n_0*n_0-1.0)/2;
@@ -123,7 +129,7 @@ int main() {
     }
 
 
-
+    #pragma omp parallel for
     for (int k=1; k<N_z; k++) {
 
         double current_z=z_begin+dz*k;
@@ -199,7 +205,7 @@ int main() {
     for (int i = 0; i<N_z; i++) {
         for (int j = 0; j<N_x; j++){
 
-            fprintf(file, "%1.10e ", cabs(array_u[i][j]));//maximum_u));
+            fprintf(file, "%1.10e ", cabs(array_u[i][j]));
         }
 
         fprintf(file,"\n");
@@ -223,6 +229,9 @@ int main() {
     free(array_D);
 
     printf("Hello, World! : %d \n", counter);
+    clock_t end = clock();
+    double elapsed_time = (double)(end - start) / CLOCKS_PER_SEC;
+    printf("Execution time: %f s\n", elapsed_time);
     return 0;
 }
 
