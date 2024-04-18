@@ -5,9 +5,9 @@
 
 
 //SYSTEM SI
-int N_x=8000;
-int N_z=8000;
-double x_begin=0,x_end=750.0, z_begin=0,z_end=50000.0;
+int N_x=10000;
+int N_z=10000;
+double x_begin=0,x_end=5000.0, z_begin=0,z_end=50000.0;
 double n_0 = 1.00028;
 double pol=1; // Polarization type: 1 for 'Horz.' or 0 for 'Vert.'
 
@@ -16,7 +16,7 @@ double source_height = 200.0;
 double gamma_horiz=1*3.14/180; //elv
 double gamma_rastvor=0.35*3.14/180; //bw
 double a_0=1.2e-6;//2.4e-6;
-double source_frequency = 1.e9;
+double source_frequency = 3.e8;
 
 //ducting
 void duct_refraction(complex double* refractive_index, double current_x,int l){
@@ -29,7 +29,7 @@ void duct_refraction(complex double* refractive_index, double current_x,int l){
 //exponential function of refractive index
 void exponential_refraction(complex double* refractive_index, double current_x,int l){
 
-    refractive_index [l] = cpow ((1 + (315*cexp(-current_x/7350))*1.e-6),2);  //it is square refractive index n^2
+    refractive_index [l] = pow ((1 + (315*cexp(-current_x/7350))*1.e-6),2);  //it is square refractive index n^2
 }
 
 
@@ -97,6 +97,7 @@ int main() {
     double gamma_horiz_3 = 45*3.14/180;
     double gamma_horiz_4 = 15*3.14/180;
     double gamma_horiz_5 = 20*3.14/180;
+    int counter = 0;
 
 
 
@@ -150,13 +151,16 @@ int main() {
                 // array_B[l]=B;
                 array_A[l] = A;
                 array_C[l] = C;
-                //exponential_refraction(refractive_index[k], current_x,l);
-                duct_refraction(refractive_index[k], current_x,l);
+                exponential_refraction(refractive_index[k], current_x,l);
+                //duct_refraction(refractive_index[k], current_x,l);
                 //linear_refraction(refractive_index[k], current_x,l);
                 //printf("%10.7e ",cabs(refractive_index[k][300]));
                 array_B[l] = -1.0 /(dx*dx) + (2.0*I*k_0)/dz + k_0*k_0*(refractive_index[k][l]-1.0);
                 array_D[l] = array_u[k-1][l]*(2.0 * I * k_0 /dz + 1.0/(dx*dx)-k_0*k_0*(refractive_index[k][l]-1.0)/2) - 1.0/(2.0*dx*dx)*(array_u[k-1][l+1] + array_u[k-1][l-1]);
-
+                if (cabs(array_B[l]) >= cabs(array_A[l]) + cabs(array_C[l]))
+                    counter+=0;
+                else
+                    counter+=1;
             }
 
             //printf("ee: %f\n", cabs(array_D[l]));
@@ -218,7 +222,7 @@ int main() {
     free(array_C);
     free(array_D);
 
-    printf("Hello, World!\n");
+    printf("Hello, World! : %d \n", counter);
     return 0;
 }
 
