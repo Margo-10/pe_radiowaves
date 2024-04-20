@@ -128,9 +128,9 @@ int main() {
 
     }
 
-
-    #pragma omp parallel for
-    for (int k=1; k<N_z; k++) {
+    int k;
+    #pragma omp parallel for default(none) shared(N_z, array_u, array_A, array_B, array_C, array_D, refractive_index, dz, z_begin, dx, x_begin, B, N_x, A, C, k_0, counter, x_end) private(k)
+    for (k=1; k<N_z; k++) {
 
         double current_z=z_begin+dz*k;
 
@@ -173,6 +173,7 @@ int main() {
 
 
         }
+
 
         tridiag_matrix_algorithm(array_A, array_B, array_C, array_D, array_u[k]);
 
@@ -234,5 +235,6 @@ int main() {
     printf("Execution time: %f s\n", elapsed_time);
     return 0;
 }
+#pragma clang diagnostic pop
 
 
