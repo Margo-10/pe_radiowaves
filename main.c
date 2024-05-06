@@ -24,6 +24,11 @@ double source_frequency = 3.e8;
 complex double eps_1 = 4.56+I*0.251;
 double eps = 1.000625;
 double b=0.28;
+double rho=2440;
+
+//visibility
+double V_0 = 6.5; //meters
+double h_0 = 2;
 
 //for Libya and Sudan
 double gamma = 1.07;
@@ -33,7 +38,7 @@ double C = 2.3*1.e-5;
 
 //wagner
 void wagner_model(complex double* refractive_index, complex double* eps_0, complex double* phi_1, double current_x,int l){
-
+    phi_1[l] = C*pow(h_0/current_x,b)/(rho*pow(V_0,gamma));
     refractive_index [l] = 3*eps_0[l]*phi_1[l]*(eps_1-eps_0[l])/(eps_1+2*eps_0[l]) - eps_0[l]; //it is square refractive index n^2
 
 }
