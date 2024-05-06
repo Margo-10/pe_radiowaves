@@ -26,7 +26,6 @@ double eps_0 = 1.000625;
 double phi_1=0.01;
 
 
-
 //wagner
 void wagner_model(complex double* refractive_index, double current_x,int l){
 
@@ -34,10 +33,25 @@ void wagner_model(complex double* refractive_index, double current_x,int l){
 
 }
 
+//kharadly_and_jackson_model
+void kharadly_and_jackson_model(complex double* refractive_index, double current_x,int l){
+
+    refractive_index [l] = (2*eps_0*phi_1*(eps_1-eps_0) + eps_0*eps_1 + 2*eps_0*eps_0)/(eps_1+2*eps_0-phi_1*(eps_1-eps_0)); //it is square refractive index n^2
+
+}
+
+
+//looyenga_model
+void looyenga_model(complex double* refractive_index, double current_x,int l){
+
+    refractive_index [l] = cpow((phi_1*(pow(eps_1,1.0/3.0)-pow(eps_0,1.0/3.0)) + pow(eps_0,1.0/3.0)), 3); //it is square refractive index n^2
+
+}
+
 //standard
 void standard_refraction(complex double* refractive_index, double current_x,int l){
 
-    refractive_index [l] =  pow ((1 + (315*cexp(-1.36 *1.e-5*current_x))*1.e-6),2); //it is square refractive index n^2
+    refractive_index [l] =  cpow ((1 + (315*cexp(-1.36 *1.e-5*current_x))*1.e-6),2); //it is square refractive index n^2
 
 }
 
@@ -178,6 +192,8 @@ int main() {
                 //wagner_model(refractive_index[k], current_x, l);
                 //standard_refraction(refractive_index[k], current_x, l);
                 //exponential_refraction(refractive_index[k], current_x, l);
+                //kharadly_and_jackson_model(refractive_index[k], current_x,l);
+                //looyenga_model(refractive_index[k], current_x,l);
                 duct_refraction(refractive_index[k], current_x,l);
                 //linear_refraction(refractive_index[k], current_x,l);
                 //printf("%10.7e ",cabs(refractive_index[k][300]));
