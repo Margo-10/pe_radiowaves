@@ -1,2 +1,0 @@
-C:/GitHub/pe_radiowaves/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/GitHub/pe_radiowaves/cmake-build-debug/CMakeFiles/rebuild_cache.dir

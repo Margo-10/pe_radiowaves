@@ -2,23 +2,35 @@
 #include<stdlib.h>
 #include<complex.h>
 #include<math.h>
-#include<omp.h>
 #include<time.h>
+#include <C:\Program Files (x86)\Microsoft SDKs\MPI\Include\mpi.h>
+#include <C:\Program Files\JetBrains\CLion 2023.2.2\bin\mingw\lib\gcc\x86_64-w64-mingw32\13.1.0\include\omp.h>
+
 
 
 //SYSTEM SI
-int N_x=1000;
-int N_z=5000;
-double x_begin=0,x_end=1000.0, z_begin=0,z_end=50000.0;
+int N_x=12000;
+int N_z=9000;
+double x_begin=0,x_end=4000.0, z_begin=0,z_end=50000.0;
 double n_0 = 1.00028;
 double pol=1; // Polarization type: 1 for 'Horz.' or 0 for 'Vert.'
 
 // source parameters
-double source_height = 250.0;
-double gamma_horiz=1*3.14/180; //elv
-double gamma_rastvor=0.35*3.14/180; //bw
+double source_height = 10.0;
+double gamma_horiz=5*3.14/180; //elv
+double gamma_rastvor=0.5*3.14/180; //bw
 double a_0 = 1.2e-6;//2.4e-6;
-double source_frequency = 3.e8;
+double source_frequency = 3.e9;
+
+
+
+//standard
+void standard_refraction(complex double* refractive_index, double current_x,int l){
+
+    refractive_index [l] =  pow ((1 + (315*cexp(-1.36 *1.e-5*current_x))*1.e-6),2); //it is square refractive index n^2
+
+}
+
 
 //ducting
 void duct_refraction(complex double* refractive_index, double current_x,int l){
@@ -128,76 +140,75 @@ int main() {
 
     }
 
-    int k;
-    #pragma omp parallel for default(none) shared(N_z, array_u, array_A, array_B, array_C, array_D, refractive_index, dz, z_begin, dx, x_begin, B, N_x, A, C, k_0, counter, x_end) private(k)
-        for (k = 1; k < N_z; k++) {
-
-            double current_z = z_begin + dz * k;
-
-            for (int l = 0; l < N_x; l++) {
-
-                double current_x = x_begin + dx * l;
-
-                //recalculation A,B,C,D
-                if (l == 0) {
-                    array_D[l] = 0;
-                    array_B[l] = B;
-                    array_A[l] = 0;
-                    array_C[l] = 0;
-                } else if (l == N_x - 1) {
-                    array_D[l] = 0;
-                    array_B[l] = B;
-                    array_A[l] = 0;
-                    array_C[l] = 0;
-                } else {
-                    // array_B[l]=B;
-                    array_A[l] = A;
-                    array_C[l] = C;
-                    exponential_refraction(refractive_index[k], current_x, l);
-                    //duct_refraction(refractive_index[k], current_x,l);
-                    //linear_refraction(refractive_index[k], current_x,l);
-                    //printf("%10.7e ",cabs(refractive_index[k][300]));
-                    array_B[l] = -1.0 / (dx * dx) + (2.0 * I * k_0) / dz + k_0 * k_0 * (refractive_index[k][l] - 1.0);
-                    array_D[l] = array_u[k - 1][l] * (2.0 * I * k_0 / dz + 1.0 / (dx * dx) -
-                                                      k_0 * k_0 * (refractive_index[k][l] - 1.0) / 2) -
-                                 1.0 / (2.0 * dx * dx) * (array_u[k - 1][l + 1] + array_u[k - 1][l - 1]);
-                    if (cabs(array_B[l]) >= cabs(array_A[l]) + cabs(array_C[l]))
-                        counter += 0;
-                    else
-                        counter += 1;
-                }
-
-                //printf("ee: %f\n", cabs(array_D[l]));
 
 
+    for (int k = 1; k < N_z; k++) {
+
+        double current_z = z_begin + dz * k;
+
+        for (int l = 0; l < N_x; l++) {
+
+            double current_x = x_begin + dx * l;
+
+            //recalculation A,B,C,D
+            if (l == 0) {
+                array_D[l] = 0;
+                array_B[l] = B;
+                array_A[l] = 0;
+                array_C[l] = 0;
+            } else if (l == N_x - 1) {
+                array_D[l] = 0;
+                array_B[l] = B;
+                array_A[l] = 0;
+                array_C[l] = 0;
+            } else {
+                // array_B[l]=B;
+                array_A[l] = A;
+                array_C[l] = C;
+                standard_refraction(refractive_index[k], current_x, l);
+                //exponential_refraction(refractive_index[k], current_x, l);
+                //duct_refraction(refractive_index[k], current_x,l);
+                //linear_refraction(refractive_index[k], current_x,l);
+                //printf("%10.7e ",cabs(refractive_index[k][300]));
+                array_B[l] = -1.0 / (dx * dx) + (2.0 * I * k_0) / dz + k_0 * k_0 * (refractive_index[k][l] - 1.0);
+                array_D[l] = array_u[k - 1][l] * (2.0 * I * k_0 / dz + 1.0 / (dx * dx) -
+                                                  k_0 * k_0 * (refractive_index[k][l] - 1.0) / 2) -
+                             1.0 / (2.0 * dx * dx) * (array_u[k - 1][l + 1] + array_u[k - 1][l - 1]);
+                if (cabs(array_B[l]) >= cabs(array_A[l]) + cabs(array_C[l]))
+                    counter += 0;
+                else
+                    counter += 1;
             }
 
+            //printf("ee: %f\n", cabs(array_D[l]));
 
-            #pragma omp parallel
-            {
-            tridiag_matrix_algorithm(array_A, array_B, array_C, array_D, array_u[k]);
+
         }
 
-            int h = round(0.75 * (N_x));
-            //printf("%d\n",h);
-            //Hanning window
-            for (h; h < N_x; h++) {
-                double current_x = x_begin + dx * h;
-                array_u[k][h] *= csin(2 * M_PI * current_x / x_end) * csin(2 * M_PI * current_x / x_end);
-            }
+
+        tridiag_matrix_algorithm(array_A, array_B, array_C, array_D, array_u[k]);
 
 
-
-
-            // printf("\n");
+        int h = round(0.85 * (N_x));
+        //printf("%d\n",h);
+        //Hanning window
+        for (h; h < N_x; h++) {
+            double current_x = x_begin + dx * h;
+            array_u[k][h] *= csin(2 * M_PI * current_x / x_end) * csin(2 * M_PI * current_x / x_end);
         }
+
+    }
+
+
+
+
 
     printf("hello \n");
 
 
 
 
-    file = fopen("1_tilt.txt", "w+");
+    file = fopen("5_tilt.txt", "w+");
 
     if (file == NULL) {
         printf("FileIsNull\n");
@@ -236,6 +247,6 @@ int main() {
     printf("Execution time: %f s\n", elapsed_time);
     return 0;
 }
-#pragma clang diagnostic pop
+
 
 
