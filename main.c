@@ -200,7 +200,7 @@ int main() {
         tridiag_matrix_algorithm(array_A, array_B, array_C, array_D, array_u[k]);
 
 
-        int h = round(0.85 * (N_x));
+        int h = round(0.75 * (N_x));
         //printf("%d\n",h);
         //Hanning window
         for (h; h < N_x; h++) {
