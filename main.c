@@ -22,29 +22,34 @@ double gamma_rastvor=1*3.14/180; //bw
 double a_0 = 1.2e-6;//2.4e-6;
 double source_frequency = 3.e8;
 complex double eps_1 = 4.56+I*0.251;
-double eps_0 = 1.000625;
-double phi_1=0.01;
+double eps = 1.000625;
+double b=0.28;
+
+//for Libya and Sudan
+double gamma = 1.07;
+double C = 2.3*1.e-5;
+
 
 
 //wagner
-void wagner_model(complex double* refractive_index, double current_x,int l){
+void wagner_model(complex double* refractive_index, complex double* eps_0, complex double* phi_1, double current_x,int l){
 
-    refractive_index [l] = 3*eps_0*phi_1*(eps_1-eps_0)/(eps_1+2*eps_0) - eps_0; //it is square refractive index n^2
+    refractive_index [l] = 3*eps_0[l]*phi_1[l]*(eps_1-eps_0[l])/(eps_1+2*eps_0[l]) - eps_0[l]; //it is square refractive index n^2
 
 }
 
 //kharadly_and_jackson_model
-void kharadly_and_jackson_model(complex double* refractive_index, double current_x,int l){
+void kharadly_and_jackson_model(complex double* refractive_index,  complex double* eps_0, complex double* phi_1, double current_x,int l){
 
-    refractive_index [l] = (2*eps_0*phi_1*(eps_1-eps_0) + eps_0*eps_1 + 2*eps_0*eps_0)/(eps_1+2*eps_0-phi_1*(eps_1-eps_0)); //it is square refractive index n^2
+    refractive_index [l] = (2*eps_0[l]*phi_1[l]*(eps_1-eps_0[l]) + eps_0[l]*eps_1 + 2*eps_0[l]*eps_0[l])/(eps_1+2*eps_0[l]-phi_1[l]*(eps_1-eps_0[l])); //it is square refractive index n^2
 
 }
 
 
 //looyenga_model
-void looyenga_model(complex double* refractive_index, double current_x,int l){
+void looyenga_model(complex double* refractive_index,  complex double* eps_0, complex double* phi_1, double current_x,int l){
 
-    refractive_index [l] = cpow((phi_1*(pow(eps_1,1.0/3.0)-pow(eps_0,1.0/3.0)) + pow(eps_0,1.0/3.0)), 3); //it is square refractive index n^2
+    refractive_index [l] = cpow((phi_1[l]*(pow(eps_1,1.0/3.0)-pow(eps_0[l],1.0/3.0)) + pow(eps_0[l],1.0/3.0)), 3); //it is square refractive index n^2
 
 }
 
@@ -121,11 +126,14 @@ int main() {
     complex double *array_B = malloc(N_x * sizeof(complex double));
     complex double *array_C = malloc(N_x * sizeof(complex double));
     complex double *array_D = malloc(N_x * sizeof(complex double));
+    complex double **phi_1 = malloc(N_x * sizeof(complex double));
+    complex double **eps_0 = malloc(N_z * sizeof(complex double*));
 
     for (int i = 0; i < N_z; ++i) {
 
         array_u[i] = malloc(N_x * sizeof(complex double)); //the number of columns is multiplied by sizeof
         refractive_index[i]= malloc(N_x * sizeof(complex double));
+        eps_0 = malloc(N_x * sizeof(complex double));
 
 
     }
@@ -189,11 +197,11 @@ int main() {
                 // array_B[l]=B;
                 array_A[l] = A;
                 array_C[l] = C;
-                //wagner_model(refractive_index[k], current_x, l);
-                //standard_refraction(refractive_index[k], current_x, l);
+                standard_refraction(eps_0[k], current_x, l);
                 //exponential_refraction(refractive_index[k], current_x, l);
-                //kharadly_and_jackson_model(refractive_index[k], current_x,l);
-                //looyenga_model(refractive_index[k], current_x,l);
+                //kharadly_and_jackson_model(refractive_index[k], eps_0[k], phi_1[k], current_x,l);
+                //wagner_model(refractive_index[k],eps_0[k], phi_1[k], current_x, l);
+                //looyenga_model(refractive_index[k], eps_0[k], phi_1[k],current_x,l);
                 duct_refraction(refractive_index[k], current_x,l);
                 //linear_refraction(refractive_index[k], current_x,l);
                 //printf("%10.7e ",cabs(refractive_index[k][300]));
@@ -259,16 +267,19 @@ int main() {
     for (int i = 0; i < N_z; i++) {
         free(array_u[i]);
         free(refractive_index[i]);
+        free(eps_0[i]);
     }
 
     free(array_u);
     free(refractive_index);
+    free(eps_0);
     free(array_A);
     free(array_B);
     free(array_C);
     free(array_D);
+    free(phi_1);
 
-    printf("Hello, World! : %d \n", counter);
+    printf("Сonvergence check : %d \n", counter);
     clock_t end = clock();
     double elapsed_time = (double)(end - start) / CLOCKS_PER_SEC;
     printf("Execution time: %f s\n", elapsed_time);
