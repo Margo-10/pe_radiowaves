@@ -9,20 +9,30 @@
 
 
 //SYSTEM SI
-int N_x=12000;
-int N_z=9000;
-double x_begin=0,x_end=4000.0, z_begin=0,z_end=50000.0;
+int N_z=8000;
+int N_x=5000;
+double x_begin=0,x_end=3000.0, z_begin=0,z_end=50000.0;
 double n_0 = 1.00028;
 double pol=1; // Polarization type: 1 for 'Horz.' or 0 for 'Vert.'
 
 // source parameters
 double source_height = 10.0;
 double gamma_horiz=5*3.14/180; //elv
-double gamma_rastvor=0.5*3.14/180; //bw
+double gamma_rastvor=1*3.14/180; //bw
 double a_0 = 1.2e-6;//2.4e-6;
-double source_frequency = 3.e9;
+double source_frequency = 3.e8;
+complex double eps_1 = 4.56+I*0.251;
+double eps_0 = 1.000625;
+double phi_1=0.01;
 
 
+
+//wagner
+void wagner_model(complex double* refractive_index, double current_x,int l){
+
+    refractive_index [l] = 3*eps_0*phi_1*(eps_1-eps_0)/(eps_1+2*eps_0) - eps_0; //it is square refractive index n^2
+
+}
 
 //standard
 void standard_refraction(complex double* refractive_index, double current_x,int l){
@@ -165,9 +175,10 @@ int main() {
                 // array_B[l]=B;
                 array_A[l] = A;
                 array_C[l] = C;
-                standard_refraction(refractive_index[k], current_x, l);
+                //wagner_model(refractive_index[k], current_x, l);
+                //standard_refraction(refractive_index[k], current_x, l);
                 //exponential_refraction(refractive_index[k], current_x, l);
-                //duct_refraction(refractive_index[k], current_x,l);
+                duct_refraction(refractive_index[k], current_x,l);
                 //linear_refraction(refractive_index[k], current_x,l);
                 //printf("%10.7e ",cabs(refractive_index[k][300]));
                 array_B[l] = -1.0 / (dx * dx) + (2.0 * I * k_0) / dz + k_0 * k_0 * (refractive_index[k][l] - 1.0);
