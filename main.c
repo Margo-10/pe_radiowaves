@@ -9,8 +9,8 @@
 
 
 //SYSTEM SI
-int N_z=8000;
-int N_x=5000;
+int N_z=12000;
+int N_x=6000;
 double x_begin=0,x_end=3000.0, z_begin=0,z_end=50000.0;
 double n_0 = 1.00028;
 double pol=1; // Polarization type: 1 for 'Horz.' or 0 for 'Vert.'
@@ -20,7 +20,7 @@ double source_height = 10.0;
 double gamma_horiz=5*3.14/180; //elv
 double gamma_rastvor=1*3.14/180; //bw
 double a_0 = 1.2e-6;//2.4e-6;
-double source_frequency = 3.e8;
+double source_frequency = 2.e9;
 complex double eps_1 = 4.56+I*0.251;
 double eps = 1.000625;
 double b=0.28;
