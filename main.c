@@ -39,7 +39,7 @@ double C = 2.3*1.e-5;
 //wagner
 void wagner_model(complex double* refractive_index, complex double* eps_0, complex double* phi_1, double current_x,int l){
     phi_1[l] = C*pow(h_0/current_x,b)/(rho*pow(V_0,gamma));
-    refractive_index [l] = 3*eps_0[l]*phi_1[l]*(eps_1-eps_0[l])/(eps_1+2*eps_0[l]) - eps_0[l]; //it is square refractive index n^2
+    refractive_index [l] = 3*eps_0[l]*phi_1[l]*(eps_1-eps_0[l])/(eps_1+2*eps_0[l]) + eps_0[l]; //it is square refractive index n^2
 
 }
 
