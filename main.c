@@ -61,7 +61,7 @@ void looyenga_model(complex double* refractive_index,  complex double* eps_0, co
 //standard
 void standard_refraction(complex double* refractive_index, double current_x,int l){
 
-    refractive_index [l] =  cpow ((1 + (315*cexp(-1.36 *1.e-5*current_x))*1.e-6),2); //it is square refractive index n^2
+    refractive_index [l] =  cpow ((1 + (315*cexp(-1.36*current_x*1.e-4))*1.e-6),2); //it is square refractive index n^2
 
 }
 
@@ -73,20 +73,6 @@ void duct_refraction(complex double* refractive_index, double current_x,int l){
 
 }
 
-
-//exponential function of refractive index
-void exponential_refraction(complex double* refractive_index, double current_x,int l){
-
-    refractive_index [l] = pow ((1 + (315*cexp(-current_x/7350))*1.e-6),2);  //it is square refractive index n^2
-}
-
-
-//linear function of refractive index
-void linear_refraction(complex double* refractive_index, double current_x,int l){
-
-    refractive_index [l] = pow((1 + (315-(-0.0392)*(current_x-7350))*1.e-6),2); //it is square refractive index n^2
-
-}
 
 
 void tridiag_matrix_algorithm(complex double* array_A, complex double* array_B, complex double* array_C, complex double* array_D,complex double* array_u) {
