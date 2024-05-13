@@ -87,7 +87,7 @@ void tridiag_matrix_algorithm(complex double* array_A, complex double* array_B, 
     alpha[0] = -array_A[0]/(array_B[0]);
     beta[0] = array_D[0]/(array_B[0]);
 
-    printf("hello \n");
+    //printf("hello \n");
 
     for (int i=1; i<N_x; i++) {
 
@@ -125,14 +125,15 @@ int main() {
     complex double *array_B = malloc(N_x * sizeof(complex double));
     complex double *array_C = malloc(N_x * sizeof(complex double));
     complex double *array_D = malloc(N_x * sizeof(complex double));
-    double *phi_1 = malloc(N_x * sizeof(complex double));
+    double *phi_1 = malloc(N_x * sizeof(double));
+
 
 
     for (int i = 0; i < N_z; ++i) {
 
         array_u[i] = malloc(N_x * sizeof(complex double)); //the number of columns is multiplied by sizeof
         refractive_index[i]= malloc(N_x * sizeof(complex double));
-        eps = malloc(N_x * sizeof(complex double));
+        eps[i] = malloc(N_x * sizeof(complex double));
 
 
     }
@@ -239,7 +240,7 @@ int main() {
 
 
 
-    printf("hello \n");
+    //printf("hello \n");
 
 
 
