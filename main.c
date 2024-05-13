@@ -9,7 +9,7 @@
 
 
 //SYSTEM SI
-int N_z=15000;
+int N_z=20000;
 int N_x=10000;
 double x_begin=0,x_end=1000.0, z_begin=0,z_end=10000.0;
 double n_0 = 1.00028;
@@ -248,7 +248,7 @@ int main() {
 
 
 
-    file = fopen("5_tilt_kj.txt", "w+");
+    file = fopen("9_tilt_looyeng.txt", "w+");
 
     if (file == NULL) {
         printf("FileIsNull\n");
