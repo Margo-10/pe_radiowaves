@@ -9,16 +9,16 @@
 
 
 //SYSTEM SI
-int N_z=13000;
+int N_z=15000;
 int N_x=10000;
-double x_begin=0,x_end=5000.0, z_begin=0,z_end=50000.0;
+double x_begin=0,x_end=1000.0, z_begin=0,z_end=10000.0;
 double n_0 = 1.00028;
 double pol=1; // Polarization type: 1 for 'Horz.' or 0 for 'Vert.'
 
 // source parameters
 double source_height = 10.0;
-double gamma_horiz=5*3.14/180; //elv
-double gamma_rastvor=0.5*3.14/180; //bw
+double gamma_horiz=9*3.14/180; //elv
+double gamma_rastvor=1*3.14/180; //bw
 double a_0 = 1.2e-6;//2.4e-6;
 double source_frequency = 3.e9;
 //complex double eps_1 = 4.56+I*0.251;
@@ -49,24 +49,28 @@ void standard_refraction(complex double* refractive_index, double current_x,int 
 }
 
 //kharadly_and_jackson_model
-void kharadly_and_jackson_model(complex double* eps, complex double* refractive_index, complex double eps_1, double* phi_1,  double current_x, int l){ //double* phi_1,
+//void kharadly_and_jackson_model(complex double* eps, complex double* refractive_index, complex double eps_1, double* phi_1,  double current_x, int l){ //double* phi_1,
+//    if (l==0)
+//        phi_1[l] = 0;
+//    else
+//        phi_1[l] = C_*pow(h_0/current_x,b)/(rho*pow(V_0,gamma_));
+//
+//    eps[l] = (2*refractive_index[l]*phi_1[l]*(eps_1-refractive_index[l]) + refractive_index[l]*eps_1 + 2*refractive_index[l]*refractive_index[l])/(eps_1+2*refractive_index[l]-phi_1[l]*(eps_1-refractive_index[l])); //it is square refractive index n^2
+//
+//}
+
+
+//looyenga_model
+void looyenga_model(complex double* eps, complex double* refractive_index, complex double eps_1, double* phi_1,  double current_x, int l){
     if (l==0)
         phi_1[l] = 0;
     else
         phi_1[l] = C_*pow(h_0/current_x,b)/(rho*pow(V_0,gamma_));
 
-    eps[l] = (2*refractive_index[l]*phi_1[l]*(eps_1-refractive_index[l]) + refractive_index[l]*eps_1 + 2*refractive_index[l]*refractive_index[l])/(eps_1+2*refractive_index[l]-phi_1[l]*(eps_1-refractive_index[l])); //it is square refractive index n^2
+    eps[l] = cpow((phi_1[l]*(pow(eps_1,1.0/3.0)-pow(refractive_index[l],1.0/3.0)) + pow(refractive_index[l],1.0/3.0)), 3); //it is square refractive index n^2
 
 }
 
-
-//looyenga_model
-//void looyenga_model(complex double* refractive_index,  complex double* eps_0, complex double eps_1, complex double* phi_1, double current_x,int l){
-//
-//    refractive_index [l] = cpow((phi_1[l]*(pow(eps_1,1.0/3.0)-pow(eps_0[l],1.0/3.0)) + pow(eps_0[l],1.0/3.0)), 3); //it is square refractive index n^2
-//
-//}
-//
 
 
 //
@@ -202,10 +206,9 @@ int main() {
                 array_C[l] = C;
                 standard_refraction(refractive_index[k], current_x, l);
                 //exponential_refraction(refractive_index[k], current_x, l);
-                //kharadly_and_jackson_model(eps_0[k], eps_1, phi_1, current_x, l);
-                kharadly_and_jackson_model(eps[k], refractive_index[k], eps_1, phi_1, current_x, l);
+                //kharadly_and_jackson_model(eps[k], refractive_index[k], eps_1, phi_1, current_x, l);
                 //wagner_model(refractive_index[k],eps_0[k], eps_1, phi_1[k], current_x, l);
-                //looyenga_model(refractive_index[k], eps_0[k], eps_1, phi_1[k],current_x,l);
+                looyenga_model(eps[k], refractive_index[k], eps_1, phi_1, current_x, l);
                 //duct_refraction(refractive_index[k], current_x,l);
                 //linear_refraction(refractive_index[k], current_x,l);
                 //printf("%10.7e ",cabs(eps_0[k][300]));
