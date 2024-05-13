@@ -9,18 +9,18 @@
 
 
 //SYSTEM SI
-int N_z=12000;
-int N_x=6000;
-double x_begin=0,x_end=3000.0, z_begin=0,z_end=50000.0;
+int N_z=5000;
+int N_x=2000;
+double x_begin=0,x_end=1000.0, z_begin=0,z_end=50000.0;
 double n_0 = 1.00028;
 double pol=1; // Polarization type: 1 for 'Horz.' or 0 for 'Vert.'
 
 // source parameters
-double source_height = 10.0;
-double gamma_horiz=5*3.14/180; //elv
-double gamma_rastvor=1*3.14/180; //bw
+double source_height = 200.0;
+double gamma_horiz=1*3.14/180; //elv
+double gamma_rastvor=0.5*3.14/180; //bw
 double a_0 = 1.2e-6;//2.4e-6;
-double source_frequency = 2.e9;
+double source_frequency = 3.e8;
 complex double eps_1 = 4.56+I*0.251;
 double eps = 1.000625;
 double b=0.28;
@@ -113,18 +113,19 @@ int main() {
     FILE *file = NULL;
     complex double **array_u = malloc(N_z * sizeof(complex double*)); //the number of lines is multiplied by sizeof
     complex double **refractive_index = malloc(N_z * sizeof(complex double*));
+    //complex double **eps_0 = malloc(N_z * sizeof(complex double*));
     complex double *array_A = malloc(N_x * sizeof(complex double));
     complex double *array_B = malloc(N_x * sizeof(complex double));
     complex double *array_C = malloc(N_x * sizeof(complex double));
     complex double *array_D = malloc(N_x * sizeof(complex double));
-    complex double **phi_1 = malloc(N_x * sizeof(complex double));
-    complex double **eps_0 = malloc(N_z * sizeof(complex double*));
+    //complex double **phi_1 = malloc(N_x * sizeof(complex double));
+
 
     for (int i = 0; i < N_z; ++i) {
 
         array_u[i] = malloc(N_x * sizeof(complex double)); //the number of columns is multiplied by sizeof
         refractive_index[i]= malloc(N_x * sizeof(complex double));
-        eps_0 = malloc(N_x * sizeof(complex double));
+        //eps_0 = malloc(N_x * sizeof(complex double));
 
 
     }
@@ -164,12 +165,12 @@ int main() {
     }
 
 
-
     for (int k = 1; k < N_z; k++) {
 
         double current_z = z_begin + dz * k;
 
         for (int l = 0; l < N_x; l++) {
+
 
             double current_x = x_begin + dx * l;
 
@@ -179,34 +180,39 @@ int main() {
                 array_B[l] = B;
                 array_A[l] = 0;
                 array_C[l] = 0;
-            } else if (l == N_x - 1) {
+            }
+            else if (l == N_x - 1) {
                 array_D[l] = 0;
                 array_B[l] = B;
                 array_A[l] = 0;
                 array_C[l] = 0;
-            } else {
+            }
+            else {
                 // array_B[l]=B;
                 array_A[l] = A;
                 array_C[l] = C;
-                standard_refraction(eps_0[k], current_x, l);
+                standard_refraction(refractive_index[k], current_x, l);
                 //exponential_refraction(refractive_index[k], current_x, l);
                 //kharadly_and_jackson_model(refractive_index[k], eps_0[k], phi_1[k], current_x,l);
                 //wagner_model(refractive_index[k],eps_0[k], phi_1[k], current_x, l);
                 //looyenga_model(refractive_index[k], eps_0[k], phi_1[k],current_x,l);
-                duct_refraction(refractive_index[k], current_x,l);
+                //duct_refraction(refractive_index[k], current_x,l);
                 //linear_refraction(refractive_index[k], current_x,l);
                 //printf("%10.7e ",cabs(refractive_index[k][300]));
                 array_B[l] = -1.0 / (dx * dx) + (2.0 * I * k_0) / dz + k_0 * k_0 * (refractive_index[k][l] - 1.0);
                 array_D[l] = array_u[k - 1][l] * (2.0 * I * k_0 / dz + 1.0 / (dx * dx) -
                                                   k_0 * k_0 * (refractive_index[k][l] - 1.0) / 2) -
                              1.0 / (2.0 * dx * dx) * (array_u[k - 1][l + 1] + array_u[k - 1][l - 1]);
-                if (cabs(array_B[l]) >= cabs(array_A[l]) + cabs(array_C[l]))
-                    counter += 0;
-                else
-                    counter += 1;
+
             }
 
-            //printf("ee: %f\n", cabs(array_D[l]));
+
+
+
+            if (cabs(array_B[l]) >= cabs(array_A[l]) + cabs(array_C[l]))
+                counter += 0;
+            else
+                counter += 1;
 
 
         }
@@ -258,19 +264,19 @@ int main() {
     for (int i = 0; i < N_z; i++) {
         free(array_u[i]);
         free(refractive_index[i]);
-        free(eps_0[i]);
+        //free(eps_0[i]);
     }
 
     free(array_u);
     free(refractive_index);
-    free(eps_0);
+    //free(eps_0);
     free(array_A);
     free(array_B);
     free(array_C);
     free(array_D);
-    free(phi_1);
+    //free(phi_1);
 
-    printf("Сonvergence check : %d \n", counter);
+    printf("Convergence check : %d \n", counter);
     clock_t end = clock();
     double elapsed_time = (double)(end - start) / CLOCKS_PER_SEC;
     printf("Execution time: %f s\n", elapsed_time);
