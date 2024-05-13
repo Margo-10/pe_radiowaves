@@ -153,8 +153,6 @@ int main() {
     double gamma_horiz_5 = 20*3.14/180;
     int counter = 0;
 
-
-
     for (int j = 1; j < N_x-1; j++) {
         double current_x_1 = x_begin + j*dx;
         array_u[0][j] = cexp(I*k_0*current_x_1*csin(gamma_horiz)-pow(current_x_1-source_height,2)/pow(source_omega,2)) + pow(-1,pol)*cexp(I*k_0*(-current_x_1)*csin(gamma_horiz)-pow(-current_x_1-source_height,2)/pow(source_omega,2));
