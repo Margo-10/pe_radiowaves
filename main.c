@@ -10,24 +10,24 @@
 
 //SYSTEM SI
 int N_z=20000;
-int N_x=10000;
-double x_begin=0,x_end=1000.0, z_begin=0,z_end=10000.0;
+int N_x=8000;
+double x_begin=0,x_end=5000.0, z_begin=0,z_end=50000.0;
 double n_0 = 1.00028;
 double pol=1; // Polarization type: 1 for 'Horz.' or 0 for 'Vert.'
 
 // source parameters
 double source_height = 10.0;
 double gamma_horiz=9*3.14/180; //elv
-double gamma_rastvor=1*3.14/180; //bw
+double gamma_rastvor=0.5*3.14/180; //bw
 double a_0 = 1.2e-6;//2.4e-6;
-double source_frequency = 3.e9;
+double source_frequency = 2.e9;
 //complex double eps_1 = 4.56+I*0.251;
 double b=0.28;
-double rho=2440;
+double rho=2440.0;
 
 //visibility
 double V_0 = 6.5; //meters
-double h_0 = 2;
+double h_0 = 2.0;
 
 //for Libya and Sudan
 double gamma_ = 1.07;
@@ -44,7 +44,7 @@ double Humidity = 0.82;
 //standard
 void standard_refraction(complex double* refractive_index, double current_x,int l){
 
-    refractive_index [l] =  cpow ((1 + (315*cexp(-1.36*current_x*1.e-4))*1.e-6),2); //it is square refractive index n^2
+    refractive_index [l] =  cpow ((1.0 + (315.0*cexp(-1.36*current_x*1.e-4))*1.e-6),2); //it is square refractive index n^2
 
 }
 
@@ -62,7 +62,7 @@ void standard_refraction(complex double* refractive_index, double current_x,int 
 
 //looyenga_model
 void looyenga_model(complex double* eps, complex double* refractive_index, complex double eps_1, double* phi_1,  double current_x, int l){
-    if (l==0)
+    if (current_x<2)
         phi_1[l] = 0;
     else
         phi_1[l] = C_*pow(h_0/current_x,b)/(rho*pow(V_0,gamma_));
