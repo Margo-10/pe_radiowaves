@@ -9,15 +9,15 @@
 
 
 //SYSTEM SI
-int N_z=20000;
-int N_x=8000;
-double x_begin=0,x_end=5000.0, z_begin=0,z_end=50000.0;
+int N_z=15000;
+int N_x=2000;
+double x_begin=0,x_end=500.0, z_begin=0,z_end=10000.0;
 double n_0 = 1.00028;
 double pol=1; // Polarization type: 1 for 'Horz.' or 0 for 'Vert.'
 
 // source parameters
 double source_height = 10.0;
-double gamma_horiz=9*3.14/180; //elv
+double gamma_horiz=7*3.14/180; //elv
 double gamma_rastvor=0.5*3.14/180; //bw
 double a_0 = 1.2e-6;//2.4e-6;
 double source_frequency = 2.e9;
@@ -31,7 +31,7 @@ double h_0 = 2.0;
 
 //for Libya and Sudan
 double gamma_ = 1.07;
-double C_ = 2.3*1.e-5;
+double C_ = 2.3*1.e-2;
 double Humidity = 0.82;
 
 //wagner
@@ -216,24 +216,25 @@ int main() {
 //                             1.0 / (2.0 * dx * dx) * (array_u[k - 1][l + 1] + array_u[k - 1][l - 1]);
                 array_B[l] = -1.0 / (dx * dx) + (2.0 * I * k_0) / dz + k_0 * k_0 * (eps[k][l] - 1.0);
                 array_D[l] = array_u[k - 1][l] * (2.0 * I * k_0 / dz + 1.0 / (dx * dx) - k_0 * k_0 * (eps[k][l] - 1.0) / 2) - 1.0 / (2.0 * dx * dx) * (array_u[k - 1][l + 1] + array_u[k - 1][l - 1]);
+                if (cabs(array_B[l]) >= (cabs(array_A[l]) + cabs(array_C[l])))
+                    counter += 0;
+                else
+                    counter += 1;
 
             }
 
-            if (cabs(array_B[l]) >= cabs(array_A[l]) + cabs(array_C[l]))
-                counter += 0;
-            else
-                counter += 1;
+
 
         }
 
         tridiag_matrix_algorithm(array_A, array_B, array_C, array_D, array_u[k]);
-        int h = round(0.75 * (N_x));
-        //printf("%d\n",h);
-        //Hanning window
-        for (h; h < N_x; h++) {
-            double current_x = x_begin + dx * h;
-            array_u[k][h] *= csin(2 * M_PI * current_x / x_end) * csin(2 * M_PI * current_x / x_end);
-        }
+//        int h = round(0.75 * (N_x));
+//        //printf("%d\n",h);
+//        //Hanning window
+//        for (h; h < N_x; h++) {
+//            double current_x = x_begin + dx * h;
+//            array_u[k][h] *= csin(2 * M_PI * current_x / x_end) * csin(2 * M_PI * current_x / x_end);
+//        }
 
     }
 
