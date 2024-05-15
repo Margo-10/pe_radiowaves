@@ -9,14 +9,14 @@
 
 
 //SYSTEM SI
-int N_z=15000;
-int N_x=2000;
-double x_begin=0,x_end=500.0, z_begin=0,z_end=10000.0;
+int N_z=3100;
+int N_x=3100;
+double x_begin=0,x_end=200.0, z_begin=0,z_end=500.0;
 double n_0 = 1.00028;
 double pol=1; // Polarization type: 1 for 'Horz.' or 0 for 'Vert.'
 
 // source parameters
-double source_height = 10.0;
+double source_height = 50.0;
 double gamma_horiz=7*3.14/180; //elv
 double gamma_rastvor=0.5*3.14/180; //bw
 double a_0 = 1.2e-6;//2.4e-6;
@@ -116,7 +116,7 @@ int main() {
     clock_t start = clock();
     double dx = (x_end - x_begin) / N_x, dz = (z_end - z_begin) / N_z;
     complex double k_0 = 2.0*M_PI*source_frequency/3.e8;
-    complex double B = -1.0 /(dx*dx) + (2.0*I*k_0)/dz + k_0*k_0*(n_0*n_0-1.0)/2;
+    complex double B = -1.0 /(dx*dx) + (2.0*I*k_0)/dz + k_0*k_0*(n_0*n_0-1.0);
     complex double A = 1.0 /(2.0*dx*dx), C = 1.0 /(2.0*dx*dx);
     complex double eps_1 = (4.56 + 0.04*Humidity - 7.78*pow(Humidity,2)*1.e-4 + 5.56*pow(Humidity,3)*1.e-6) + I*(0.251+ 0.02*Humidity - 3.71*pow(Humidity,2)*1.e-4 + 2.76*pow(Humidity,3)*1.e-6);
 
@@ -215,7 +215,7 @@ int main() {
 //                                                  k_0 * k_0 * (refractive_index[k][l] - 1.0) / 2) -
 //                             1.0 / (2.0 * dx * dx) * (array_u[k - 1][l + 1] + array_u[k - 1][l - 1]);
                 array_B[l] = -1.0 / (dx * dx) + (2.0 * I * k_0) / dz + k_0 * k_0 * (eps[k][l] - 1.0);
-                array_D[l] = array_u[k - 1][l] * (2.0 * I * k_0 / dz + 1.0 / (dx * dx) - k_0 * k_0 * (eps[k][l] - 1.0) / 2) - 1.0 / (2.0 * dx * dx) * (array_u[k - 1][l + 1] + array_u[k - 1][l - 1]);
+                array_D[l] = array_u[k - 1][l] * (2.0 * I * k_0 / dz + 1.0 / (dx * dx)) - 1.0 / (2.0 * dx * dx) * (array_u[k - 1][l + 1] + array_u[k - 1][l - 1]);
                 if (cabs(array_B[l]) >= (cabs(array_A[l]) + cabs(array_C[l])))
                     counter += 0;
                 else
@@ -228,13 +228,13 @@ int main() {
         }
 
         tridiag_matrix_algorithm(array_A, array_B, array_C, array_D, array_u[k]);
-//        int h = round(0.75 * (N_x));
-//        //printf("%d\n",h);
-//        //Hanning window
-//        for (h; h < N_x; h++) {
-//            double current_x = x_begin + dx * h;
-//            array_u[k][h] *= csin(2 * M_PI * current_x / x_end) * csin(2 * M_PI * current_x / x_end);
-//        }
+        int h = round(0.75 * (N_x));
+        //printf("%d\n",h);
+        //Hanning window
+        for (h; h < N_x; h++) {
+            double current_x = x_begin + dx * h;
+            array_u[k][h] *= csin(2 * M_PI * current_x / x_end) * csin(2 * M_PI * current_x / x_end);
+        }
 
     }
 
@@ -247,7 +247,7 @@ int main() {
 
 
 
-    file = fopen("9_tilt_looyeng.txt", "w+");
+    file = fopen("looyeng.txt", "w+");
 
     if (file == NULL) {
         printf("FileIsNull\n");
