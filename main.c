@@ -102,7 +102,7 @@ void tridiag_matrix_algorithm(complex double* array_A, complex double* array_B, 
 
     array_u[N_x-1]=beta[N_x-1];
 
-    for (int i = N_x - 1; i >= 0; i--) {
+    for (int i = N_x - 2; i > 0; i--) {
         array_u[i] = alpha[i] * array_u[i+1] + beta[i];
 
     }
