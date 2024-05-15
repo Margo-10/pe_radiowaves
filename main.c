@@ -44,7 +44,7 @@ double Humidity = 0.82;
 //standard
 void standard_refraction(complex double* refractive_index, double current_x,int l){
 
-    refractive_index [l] =  cpow ((1.0 + (315.0*cexp(-1.36*current_x*1.e-4))*1.e-6),2); //it is square refractive index n^2
+    refractive_index [l] = cpow ((1.0 + (315.0*cexp(-1.36*current_x*1.e-4))*1.e-6),2); //it is square refractive index n^2
 
 }
 
