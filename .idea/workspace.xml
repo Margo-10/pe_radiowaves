@@ -20,6 +20,8 @@
   <component name="ChangeListManager">
     <list default="true" id="89719a23-174e-41b4-9752-0886d4621369" name="Changes" comment="h">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/main.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.exe" beforeDir="false" afterPath="$PROJECT_DIR$/main.exe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pe_radiowaves.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/pe_radiowaves.ipynb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -177,7 +179,9 @@
       <workItem from="1715808714281" duration="16000" />
       <workItem from="1715861597793" duration="9845000" />
       <workItem from="1715884001358" duration="108000" />
-      <workItem from="1715887013527" duration="3000" />
+      <workItem from="1715887013527" duration="917000" />
+      <workItem from="1715888526451" duration="13000" />
+      <workItem from="1715888664223" duration="10636000" />
     </task>
     <task id="LOCAL-00001" summary="h">
       <option name="closed" value="true" />
@@ -435,7 +439,15 @@
       <option name="project" value="LOCAL" />
       <updated>1715880640099</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="h">
+      <option name="closed" value="true" />
+      <created>1715887336449</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1715887336449</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

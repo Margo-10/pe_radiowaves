@@ -9,15 +9,15 @@
 
 
 //SYSTEM SI
-int N_z=10000;
-int N_x=15000;
-double x_begin=0,x_end=2000.0, z_begin=0,z_end=30000.0;
+int N_z=7000;
+int N_x=5000;
+double x_begin=0,x_end=300.0, z_begin=0,z_end=500.0;
 double n_0 = 1.00028;
 double pol=1; // Polarization type: 1 for 'Horz.' or 0 for 'Vert.'
 
 // source parameters
-double source_height = 10.0;
-double gamma_horiz=5*3.14/180; //elv
+double source_height = 100.0;
+double gamma_horiz=3*3.14/180; //elv
 double gamma_rastvor=0.5*3.14/180; //bw
 double a_0 = 1.2e-6;//2.4e-6;
 double source_frequency = 2.e9;
@@ -45,13 +45,13 @@ void standard_refraction(complex double* refractive_index, double current_x,int 
 
 //looyenga_model
 void looyenga_model(complex double* eps, complex double* refractive_index, complex double eps_1, double* phi_1,  double current_x, int l){
-    if (current_x<2)
-        phi_1[l] = 0;
-    else
-        phi_1[l] = C_*pow(h_0/current_x,b)/(rho*pow(V_0,gamma_));
-
-    eps[l] = cpow((phi_1[l]*(pow(eps_1,1.0/3.0)-pow(refractive_index[l],1.0/3.0)) + pow(refractive_index[l],1.0/3.0)), 3); //it is square refractive index n^2
-
+//    if (current_x<2)
+//        phi_1[l] = 0;
+//    else
+//        phi_1[l] = C_*pow(h_0/current_x,b)/(rho*pow(V_0,gamma_));
+//
+//    eps[l] = cpow((phi_1[l]*(cpow(eps_1,1.0/3.0)-cpow(refractive_index[l],1.0/3.0)) + cpow(refractive_index[l],1.0/3.0)), 3); //it is square refractive index n^2
+    eps[l]=refractive_index[l];
 }
 
 void tridiag_matrix_algorithm(complex double* array_A, complex double* array_B, complex double* array_C, complex double* array_D,complex double* array_u){
@@ -183,6 +183,7 @@ int main() {
 
             double current_x = x_begin + dx * l;
 
+
             //recalculation A,B,C,D
             if ((l == 0) || (l == N_x - 1)) {
                 array_D[l] = 0;
@@ -194,20 +195,20 @@ int main() {
                 array_A[l] = A;
                 array_C[l] = C;
                 standard_refraction(refractive_index[k], current_x, l);
-                looyenga_model(eps[k], refractive_index[k], eps_1, phi_1, current_x, l);
+                //looyenga_model(eps[k], refractive_index[k], eps_1, phi_1, current_x, l);
                 //duct_refraction(refractive_index[k], current_x,l);
                 //linear_refraction(refractive_index[k], current_x,l);
                 //exponential_refraction(refractive_index[k], current_x, l);
                 //kharadly_and_jackson_model(eps[k], refractive_index[k], eps_1, phi_1, current_x, l);
                 //wagner_model(refractive_index[k],eps_0[k], eps_1, phi_1[k], current_x, l);
                 //printf("%10.7e ",cabs(eps_0[k][300]));
-//                array_B[l] = -1.0 / (dx * dx) + (2.0 * I * k_0) / dz + k_0 * k_0 * (refractive_index[k][l] - 1.0);
-//                array_D[l] = array_u[k - 1][l] * (2.0 * I * k_0 / dz + 1.0 / (dx * dx) -
-//                                                  k_0 * k_0 * (refractive_index[k][l] - 1.0) / 2) -
-//                             1.0 / (2.0 * dx * dx) * (array_u[k - 1][l + 1] + array_u[k - 1][l - 1]);
+                array_B[l] = -1.0 / (dx * dx) + (2.0 * I * k_0) / dz + k_0 * k_0 * (refractive_index[k][l] - 1.0);
+                array_D[l] = array_u[k - 1][l] * (2.0 * I * k_0 / dz + 1.0 / (dx * dx) -
+                                                  k_0 * k_0 * (refractive_index[k][l] - 1.0) / 2) -
+                             1.0 / (2.0 * dx * dx) * (array_u[k - 1][l + 1] + array_u[k - 1][l - 1]);
 
-                array_B[l] = -1.0 / (dx * dx) + (2.0 * I * k_0) / dz + k_0 * k_0 * (eps[k][l] - 1.0);
-                array_D[l] = array_u[k - 1][l] * (2.0 * I * k_0 / dz + 1.0 / (dx * dx)) - 1.0 / (2.0 * dx * dx) * (array_u[k - 1][l + 1] + array_u[k - 1][l - 1]);
+//                array_B[l] = -1.0 / (dx * dx) + (2.0 * I * k_0) / dz + k_0 * k_0 * (eps[k][l] - 1.0);
+//                array_D[l] = array_u[k - 1][l] * (2.0 * I * k_0 / dz + 1.0 / (dx * dx)) - 1.0 / (2.0 * dx * dx) * (array_u[k - 1][l + 1] + array_u[k - 1][l - 1]);
                 if (cabs(array_B[l]) >= (cabs(array_A[l]) + cabs(array_C[l])))
                     counter += 0;
                 else
@@ -230,7 +231,7 @@ int main() {
 
     }
     //printf("hello \n");
-    file = fopen("new_looyeng.txt", "w+");
+    file = fopen("newSmallrefr1phiexist_looyeng.txt", "w+");
 
     if (file == NULL) {
         printf("FileIsNull\n");
@@ -248,7 +249,6 @@ int main() {
 
 
     fclose(file);
-
 
 
     for (int i = 0; i < N_z; i++) {
