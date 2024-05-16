@@ -9,7 +9,7 @@
 
 
 //SYSTEM SI
-int N_z=12000;
+int N_z=30000;
 int N_x=20000;
 double x_begin=0,x_end=3000.0, z_begin=0,z_end=30000.0;
 double n_0 = 1.00028;
