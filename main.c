@@ -34,12 +34,6 @@ double gamma_ = 1.07;
 double C_ = 2.3*1.e-2;
 double Humidity = 0.82;
 
-//wagner
-//void wagner_model(complex double* refractive_index, complex double* eps_0, complex double eps_1, complex double* phi_1, double current_x,int l){
-//    phi_1[l] = C_*pow(h_0/current_x,b)/(rho*pow(V_0,gamma));
-//    refractive_index [l] = 3*eps_0[l]*phi_1[l]*(eps_1-eps_0[l])/(eps_1+2*eps_0[l]) + eps_0[l]; //it is square refractive index n^2
-//
-//}
 
 //standard
 void standard_refraction(complex double* refractive_index, double current_x,int l){
@@ -47,17 +41,6 @@ void standard_refraction(complex double* refractive_index, double current_x,int 
     refractive_index [l] = cpow ((1.0 + (315.0*cexp(-1.36*current_x*1.e-4))*1.e-6),2); //it is square refractive index n^2
 
 }
-
-//kharadly_and_jackson_model
-//void kharadly_and_jackson_model(complex double* eps, complex double* refractive_index, complex double eps_1, double* phi_1,  double current_x, int l){ //double* phi_1,
-//    if (l==0)
-//        phi_1[l] = 0;
-//    else
-//        phi_1[l] = C_*pow(h_0/current_x,b)/(rho*pow(V_0,gamma_));
-//
-//    eps[l] = (2*refractive_index[l]*phi_1[l]*(eps_1-refractive_index[l]) + refractive_index[l]*eps_1 + 2*refractive_index[l]*refractive_index[l])/(eps_1+2*refractive_index[l]-phi_1[l]*(eps_1-refractive_index[l])); //it is square refractive index n^2
-//
-//}
 
 
 //looyenga_model
@@ -70,19 +53,6 @@ void looyenga_model(complex double* eps, complex double* refractive_index, compl
     eps[l] = cpow((phi_1[l]*(pow(eps_1,1.0/3.0)-pow(refractive_index[l],1.0/3.0)) + pow(refractive_index[l],1.0/3.0)), 3); //it is square refractive index n^2
 
 }
-
-
-
-//
-//
-//ducting
-//void duct_refraction(complex double* refractive_index, double current_x,int l){
-//
-//    refractive_index [l] = 1 - a_0*current_x; //it is square refractive index n^2
-//
-//}
-
-
 
 void tridiag_matrix_algorithm(complex double* array_A, complex double* array_B, complex double* array_C, complex double* array_D,complex double* array_u){
     complex double *alpha = malloc(N_x * sizeof(complex double));
@@ -110,6 +80,35 @@ void tridiag_matrix_algorithm(complex double* array_A, complex double* array_B, 
     free(alpha);
     free(beta);
 }
+
+
+//
+//
+//ducting
+//void duct_refraction(complex double* refractive_index, double current_x,int l){
+//
+//    refractive_index [l] = 1 - a_0*current_x; //it is square refractive index n^2
+//
+//}
+
+
+//kharadly_and_jackson_model
+//void kharadly_and_jackson_model(complex double* eps, complex double* refractive_index, complex double eps_1, double* phi_1,  double current_x, int l){ //double* phi_1,
+//    if (l==0)
+//        phi_1[l] = 0;
+//    else
+//        phi_1[l] = C_*pow(h_0/current_x,b)/(rho*pow(V_0,gamma_));
+//
+//    eps[l] = (2*refractive_index[l]*phi_1[l]*(eps_1-refractive_index[l]) + refractive_index[l]*eps_1 + 2*refractive_index[l]*refractive_index[l])/(eps_1+2*refractive_index[l]-phi_1[l]*(eps_1-refractive_index[l])); //it is square refractive index n^2
+//
+//}
+
+//wagner
+//void wagner_model(complex double* refractive_index, complex double* eps_0, complex double eps_1, complex double* phi_1, double current_x,int l){
+//    phi_1[l] = C_*pow(h_0/current_x,b)/(rho*pow(V_0,gamma));
+//    refractive_index [l] = 3*eps_0[l]*phi_1[l]*(eps_1-eps_0[l])/(eps_1+2*eps_0[l]) + eps_0[l]; //it is square refractive index n^2
+//
+//}
 
 
 int main() {
@@ -185,35 +184,28 @@ int main() {
             double current_x = x_begin + dx * l;
 
             //recalculation A,B,C,D
-            if (l == 0) {
-                array_D[l] = 0;
-                array_B[l] = B;
-                array_A[l] = 0;
-                array_C[l] = 0;
-            }
-            else if (l == N_x - 1) {
+            if ((l == 0) || (l == N_x - 1)) {
                 array_D[l] = 0;
                 array_B[l] = B;
                 array_A[l] = 0;
                 array_C[l] = 0;
             }
             else {
-                //printf("%10.7e ",cabs(array_D[0]));
-                // array_B[l]=B;
                 array_A[l] = A;
                 array_C[l] = C;
                 standard_refraction(refractive_index[k], current_x, l);
-                //exponential_refraction(refractive_index[k], current_x, l);
-                //kharadly_and_jackson_model(eps[k], refractive_index[k], eps_1, phi_1, current_x, l);
-                //wagner_model(refractive_index[k],eps_0[k], eps_1, phi_1[k], current_x, l);
                 looyenga_model(eps[k], refractive_index[k], eps_1, phi_1, current_x, l);
                 //duct_refraction(refractive_index[k], current_x,l);
                 //linear_refraction(refractive_index[k], current_x,l);
+                //exponential_refraction(refractive_index[k], current_x, l);
+                //kharadly_and_jackson_model(eps[k], refractive_index[k], eps_1, phi_1, current_x, l);
+                //wagner_model(refractive_index[k],eps_0[k], eps_1, phi_1[k], current_x, l);
                 //printf("%10.7e ",cabs(eps_0[k][300]));
 //                array_B[l] = -1.0 / (dx * dx) + (2.0 * I * k_0) / dz + k_0 * k_0 * (refractive_index[k][l] - 1.0);
 //                array_D[l] = array_u[k - 1][l] * (2.0 * I * k_0 / dz + 1.0 / (dx * dx) -
 //                                                  k_0 * k_0 * (refractive_index[k][l] - 1.0) / 2) -
 //                             1.0 / (2.0 * dx * dx) * (array_u[k - 1][l + 1] + array_u[k - 1][l - 1]);
+
                 array_B[l] = -1.0 / (dx * dx) + (2.0 * I * k_0) / dz + k_0 * k_0 * (eps[k][l] - 1.0);
                 array_D[l] = array_u[k - 1][l] * (2.0 * I * k_0 / dz + 1.0 / (dx * dx)) - 1.0 / (2.0 * dx * dx) * (array_u[k - 1][l + 1] + array_u[k - 1][l - 1]);
                 if (cabs(array_B[l]) >= (cabs(array_A[l]) + cabs(array_C[l])))
@@ -228,25 +220,16 @@ int main() {
         }
 
         tridiag_matrix_algorithm(array_A, array_B, array_C, array_D, array_u[k]);
-        int h = round(0.75 * (N_x));
-        //printf("%d\n",h);
+
+        int h = (int)(0.75 * N_x);
         //Hanning window
-        for (h; h < N_x; h++) {
-            double current_x = x_begin + dx * h;
-            array_u[k][h] *= csin(2 * M_PI * current_x / x_end) * csin(2 * M_PI * current_x / x_end);
+        for (int ind = h; ind < N_x; ind++) {
+            double current_xh = x_begin + dx * ind;
+            array_u[k][ind] *= csin(2 * M_PI * current_xh / x_end) * csin(2 * M_PI * current_xh / x_end);
         }
 
     }
-
-
-
-
-
     //printf("hello \n");
-
-
-
-
     file = fopen("looyeng.txt", "w+");
 
     if (file == NULL) {
@@ -283,10 +266,10 @@ int main() {
     free(array_D);
     free(phi_1);
 
-    printf("Convergence check : %d \n", counter);
+    printf("Convergence check : %d ", counter);
     clock_t end = clock();
     double elapsed_time = (double)(end - start) / CLOCKS_PER_SEC;
-    printf("Execution time: %f s\n", elapsed_time);
+    printf("Execution time: %f ", elapsed_time);
     return 0;
 }
 
