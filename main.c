@@ -17,7 +17,7 @@ double pol=1; // Polarization type: 1 for 'Horz.' or 0 for 'Vert.'
 
 // source parameters
 double source_height = 10.0;
-double gamma_horiz=15*3.14/180; //elv
+double gamma_horiz=14*3.14/180; //elv
 double gamma_rastvor=0.5*3.14/180; //bw
 double a_0 = 1.2e-6;//2.4e-6;
 double source_frequency = 2.e9;
