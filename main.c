@@ -45,8 +45,8 @@ void standard_refraction(complex double* refractive_index, double current_x,int 
 
 //looyeng_model
 void looyeng_model(complex double* eps, complex double* refractive_index, complex double eps_1, double* phi_1,  double current_x, int l){
-    if (current_x<2)
-        phi_1[l] = 0;
+    if (current_x<2.0)
+        phi_1[l] = C_*pow(h_0/h_0,b)/(rho*pow(V_0,gamma_));
     else
         phi_1[l] = C_*pow(h_0/current_x,b)/(rho*pow(V_0,gamma_));
 
