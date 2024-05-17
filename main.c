@@ -9,8 +9,8 @@
 
 
 //SYSTEM SI
-int N_z=7000;
-int N_x=5000;
+int N_z=5000;
+int N_x=4000;
 double x_begin=0,x_end=300.0, z_begin=0,z_end=500.0;
 double n_0 = 1.00028;
 double pol=1; // Polarization type: 1 for 'Horz.' or 0 for 'Vert.'
@@ -43,8 +43,8 @@ void standard_refraction(complex double* refractive_index, double current_x,int 
 }
 
 
-//looyenga_model
-void looyenga_model(complex double* eps, complex double* refractive_index, complex double eps_1, double* phi_1,  double current_x, int l){
+//looyeng_model
+void looyeng_model(complex double* eps, complex double* refractive_index, complex double eps_1, double* phi_1,  double current_x, int l){
     if (current_x<2)
         phi_1[l] = 0;
     else
@@ -194,7 +194,7 @@ int main() {
                 array_A[l] = A;
                 array_C[l] = C;
                 standard_refraction(refractive_index[k], current_x, l);
-                looyenga_model(eps[k], refractive_index[k], eps_1, phi_1, current_x, l);
+                looyeng_model(eps[k], refractive_index[k], eps_1, phi_1, current_x, l);
                 //duct_refraction(refractive_index[k], current_x,l);
                 //linear_refraction(refractive_index[k], current_x,l);
                 //exponential_refraction(refractive_index[k], current_x, l);
