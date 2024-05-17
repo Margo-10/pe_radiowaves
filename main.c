@@ -9,15 +9,15 @@
 
 
 //SYSTEM SI
-int N_z=1000;
-int N_x=1000;
+int N_z=5000;
+int N_x=5000;
 double x_begin=0,x_end=300.0, z_begin=0,z_end=300.0;
 double n_0 = 1.00028;
 double pol=1; // Polarization type: 1 for 'Horz.' or 0 for 'Vert.'
 
 // source parameters
 double source_height = 10.0;
-double gamma_horiz=14*3.14/180; //elv
+double gamma_horiz=10*3.14/180; //elv
 double gamma_rastvor=0.5*3.14/180; //bw
 double a_0 = 1.2e-6;//2.4e-6;
 double source_frequency = 2.e9;
@@ -206,7 +206,7 @@ int main() {
 //                             1.0 / (2.0 * dx * dx) * (array_u[k - 1][l + 1] + array_u[k - 1][l - 1]);
 
                 array_B[l] = -1.0 / (dx * dx) + (2.0 * I * k_0) / dz + k_0 * k_0 * (eps[k][l] - 1.0)/2;
-                array_D[l] = array_u[k - 1][l] * (2.0 * I * k_0 / dz + 1.0 / (dx * dx)) - 1.0 / (2.0 * dx * dx) * (array_u[k - 1][l + 1] + array_u[k - 1][l - 1]);
+                array_D[l] = array_u[k - 1][l] * (2.0 * I * k_0 / dz + 1.0 / (dx * dx) -  k_0 * k_0 * (eps[k][l] - 1.0) / 2) - 1.0 / (2.0 * dx * dx) * (array_u[k - 1][l + 1] + array_u[k - 1][l - 1]);
                 if (cabs(array_B[l]) >= (cabs(array_A[l]) + cabs(array_C[l])))
                     counter += 0;
                 else
@@ -229,7 +229,7 @@ int main() {
 
     }
     //printf("hello \n");
-    file = fopen("14tilt_looyeng.txt", "w+");
+    file = fopen("10tilt_looyeng.txt", "w+");
 
     if (file == NULL) {
         printf("FileIsNull\n");
