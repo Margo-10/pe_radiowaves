@@ -137,7 +137,6 @@ int main() {
         refractive_index[i]= malloc(N_x * sizeof(complex double));
         eps[i] = malloc(N_x * sizeof(complex double));
 
-
     }
 
     double maximum_u=0;
