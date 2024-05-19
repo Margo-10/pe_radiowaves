@@ -9,15 +9,15 @@
 
 
 //SYSTEM SI
-int N_z=15000;
-int N_x=6000;
-double x_begin=0,x_end=3000.0, z_begin=0,z_end=50000.0;
+int N_z=20000;
+int N_x=4200;
+double x_begin=0,x_end=2100.0, z_begin=0,z_end=50000.0;
 double n_0 = 1.00028;
 double pol=1; // Polarization type: 1 for 'Horz.' or 0 for 'Vert.'
 
 // source parameters
-double source_height = 14.0;
-double gamma_horiz=10*3.14/180; //elv
+double source_height = 10.0;
+double gamma_horiz=14*3.14/180; //elv
 double gamma_rastvor=0.5*3.14/180; //bw
 double a_0 = 1.2e-6;//2.4e-6;
 double source_frequency = 2.e9;
