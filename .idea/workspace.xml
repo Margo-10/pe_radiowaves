@@ -19,9 +19,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="89719a23-174e-41b4-9752-0886d4621369" name="Changes" comment="h">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/main.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.exe" beforeDir="false" afterPath="$PROJECT_DIR$/main.exe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pe_radiowaves.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/pe_radiowaves.ipynb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -191,15 +188,7 @@
       <workItem from="1716112099835" duration="594000" />
       <workItem from="1716117344747" duration="13475000" />
       <workItem from="1716150486305" duration="34000" />
-      <workItem from="1716188725722" duration="10680000" />
-    </task>
-    <task id="LOCAL-00014" summary="h">
-      <option name="closed" value="true" />
-      <created>1715624688941</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1715624688941</updated>
+      <workItem from="1716188725722" duration="10934000" />
     </task>
     <task id="LOCAL-00015" summary="h">
       <option name="closed" value="true" />
@@ -585,7 +574,15 @@
       <option name="project" value="LOCAL" />
       <updated>1716193164652</updated>
     </task>
-    <option name="localTasksCounter" value="63" />
+    <task id="LOCAL-00063" summary="h">
+      <option name="closed" value="true" />
+      <created>1716211297626</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1716211297626</updated>
+    </task>
+    <option name="localTasksCounter" value="64" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
