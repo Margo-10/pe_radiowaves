@@ -9,9 +9,9 @@
 
 
 //SYSTEM SI
-int N_z=10;
-int N_x=1000;
-double x_begin=0,x_end=100.0, z_begin=0,z_end=1000.0;
+int N_z=8000;
+int N_x=6000;
+double x_begin=0,x_end=3000.0, z_begin=0,z_end=30000.0;
 double n_0 = 1.00028;
 double pol=1; // Polarization type: 1 for 'Horz.' or 0 for 'Vert.'
 
@@ -19,7 +19,7 @@ double pol=1; // Polarization type: 1 for 'Horz.' or 0 for 'Vert.'
 double source_height = 10.0;
 double gamma_horiz=15*M_PI/180; //elv
 double gamma_rastvor=0.5*M_PI/180; //bw
-double a_0 = 1.2e-6;//2.4e-6;
+double a_0 = 8.2e-6;
 double source_frequency = 2.e9;
 //complex double eps_1 = 4.56+I*0.251;
 double b=0.28;
@@ -38,7 +38,7 @@ double Humidity = 0.82;
 //standard
 void standard_refraction(complex double* refractive_index, double current_x,int l){
 
-    refractive_index [l] = cpow ((1.0 + (315.0*cexp(-1.36*current_x*1.e-4))*1.e-6),2); //it is square refractive index n^2
+    refractive_index [l]  = cpow ((1.0 + (315.0*cexp(-1.36*current_x*1.e-4))*1.e-6),2); //it is square refractive index n^2
 
 }
 
