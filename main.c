@@ -9,7 +9,7 @@
 
 
 //SYSTEM SI
-int N_z=50;
+int N_z=10;
 int N_x=1000;
 double x_begin=0,x_end=100.0, z_begin=0,z_end=1000.0;
 double n_0 = 1.00028;
@@ -229,7 +229,7 @@ int main() {
 
     }
     //printf("hello \n");
-    file = fopen("15tilt_0.5beam_looyenga_nz50.txt", "w+");
+    file = fopen("15tilt_0.5beam_looyenga_nz10.txt", "w+");
 
     if (file == NULL) {
         printf("FileIsNull\n");
