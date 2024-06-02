@@ -113,6 +113,7 @@ void tridiag_matrix_algorithm(complex double* array_A, complex double* array_B, 
 
 
 int main() {
+
     clock_t start = clock();
     double dx = (x_end - x_begin) / N_x, dz = (z_end - z_begin) / N_z;
     complex double k_0 = 2.0*M_PI*source_frequency/3.e8;
@@ -148,9 +149,10 @@ int main() {
     double c =  257.14;
     double d =  234.5;
     double t = 20; //Celsius
-    double P_0 =
+
     for (int j = 1; j < N_x-1; j++) {
-        P[j] = P_0;
+//        T[j] =
+//        P[j] = ;
         e[j] = Humidity / 100 * a * exp((b_e - t / d) * t / (t + c))*(1+1.e-4*(7.2+P[j]*(0.032 + 5.9*1.e-6*t*t)));
     }
 
@@ -236,14 +238,15 @@ int main() {
 
         tridiag_matrix_algorithm(array_A, array_B, array_C, array_D, array_u[k]);
 
-        int h = (int)(0.75 * N_x);
-        //Hanning window
-        for (int ind = h; ind < N_x; ind++) {
-            double current_xh = x_begin + dx * ind;
-            array_u[k][ind] *= csin(2 * M_PI * current_xh / x_end) * csin(2 * M_PI * current_xh / x_end);
-        }
+//        int h = (int)(0.75 * N_x);
+//        //Hanning window
+//        for (int ind = h; ind < N_x; ind++) {
+//            double current_xh = x_begin + dx * ind;
+//            array_u[k][ind] *= csin(2 * M_PI * current_xh / x_end) * csin(2 * M_PI * current_xh / x_end);
+//        }
 
     }
+
     //printf("hello \n");
     file = fopen("15tilt_0.5beam_looyenga_nz10.txt", "w+");
 
@@ -254,8 +257,8 @@ int main() {
 
     for (int i = 0; i<N_z; i++) {
         for (int j = 0; j<N_x; j++){
-
-            fprintf(file, "%1.6e ", cabs(array_u[i][j]));
+            double current_z = z_begin + dz * i;
+            fprintf(file, "%1.4e ", 20*log(cabs(array_u[i][j]))+ 20*log(4*M_PI) + 10*log(current_z)-30*log(3.e8/source_frequency));
         }
 
         fprintf(file,"\n");
