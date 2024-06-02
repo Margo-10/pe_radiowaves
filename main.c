@@ -11,16 +11,16 @@
 //SYSTEM SI
 int N_z=8000;
 int N_x=6000;
-double x_begin=0,x_end=3000.0, z_begin=0,z_end=30000.0;
+double x_begin=0,x_end=800.0, z_begin=0,z_end=250000.0;
 double n_0 = 1.00028;
 double pol=1; // Polarization type: 1 for 'Horz.' or 0 for 'Vert.'
 
 // source parameters
-double source_height = 10.0;
-double gamma_horiz=15*M_PI/180; //elv
-double gamma_rastvor=0.5*M_PI/180; //bw
+double source_height = 100.0;
+double gamma_horiz=0*M_PI/180; //elv
+double gamma_rastvor=2*M_PI/180; //bw
 double a_0 = 8.2e-6;
-double source_frequency = 2.e9;
+double source_frequency = 3.e9;
 //complex double eps_1 = 4.56+I*0.251;
 double b=0.28;
 double rho=2440.0;
@@ -28,28 +28,30 @@ double rho=2440.0;
 //visibility
 double V_0 = 6.5; //meters
 double h_0 = 2.0;
+double V = 30;
 
 //for Libya and Sudan
 double gamma_ = 1.07;
 double C_ = 2.3*1.e-2;
-double Humidity = 0.82;
+double Humidity = 0;
 
 
 //standard
-void standard_refraction(complex double* refractive_index, double current_x,int l){
+void standard_refraction(complex double* refractive_index, double* T, double* P, double* e, int l){
 
-    refractive_index [l]  = cpow ((1.0 + (315.0*cexp(-1.36*current_x*1.e-4))*1.e-6),2); //it is square refractive index n^2
+    refractive_index [l]  = 77.6*P[l]/T[l] - 5.6*e[l]/T[l] + 3.75*1.e5*e[l]/(T[l]*T[l]); //cpow ((1.0 + (315.0*cexp(-1.36*current_x*1.e-4))*1.e-6),2); //it is square refractive index n^2
 
 }
 
 
 //looyeng_model
 void looyeng_model(complex double* eps, complex double* refractive_index, complex double eps_1, double* phi_1,  double current_x, int l){
-    if (current_x<2.0)
-        phi_1[l] = C_*pow(h_0/h_0,b)/(rho*pow(V_0,gamma_));
-    else
-        phi_1[l] = C_*pow(h_0/current_x,b)/(rho*pow(V_0,gamma_));
+//    if (current_x<2.0)
+//        phi_1[l] = C_*pow(h_0/h_0,b)/(rho*pow(V_0,gamma_));
+//    else
+//        phi_1[l] = C_*pow(h_0/current_x,b)/(rho*pow(V_0,gamma_));
 
+    phi_1[l] = C_*rho/pow(V, gamma_);
     eps[l] = cpow((phi_1[l]*(cpow(eps_1,1.0/3.0)-cpow(refractive_index[l],1.0/3.0)) + cpow(refractive_index[l],1.0/3.0)), 3); //it is square refractive index n^2
 }
 
@@ -116,7 +118,7 @@ int main() {
     complex double k_0 = 2.0*M_PI*source_frequency/3.e8;
     complex double B = -1.0 /(dx*dx) + (2.0*I*k_0)/dz + k_0*k_0*(n_0*n_0-1.0);
     complex double A = 1.0 /(2.0*dx*dx), C = 1.0 /(2.0*dx*dx);
-    complex double eps_1 = (4.56 + 0.04*Humidity - 7.78*pow(Humidity,2)*1.e-4 + 5.56*pow(Humidity,3)*1.e-6) + I*(0.251+ 0.02*Humidity - 3.71*pow(Humidity,2)*1.e-4 + 2.76*pow(Humidity,3)*1.e-6);
+    complex double eps_1 = (4.56 + 0.04*Humidity - 7.78*pow(Humidity,2)*1.e-4 + 5.56*pow(Humidity,3)*1.e-6) - I*(0.251+ 0.02*Humidity - 3.71*pow(Humidity,2)*1.e-4 + 2.76*pow(Humidity,3)*1.e-6);
 
 
     FILE *file = NULL;
@@ -128,7 +130,9 @@ int main() {
     complex double *array_C = malloc(N_x * sizeof(complex double));
     complex double *array_D = malloc(N_x * sizeof(complex double));
     double *phi_1 = malloc(N_x * sizeof(double));
-
+    double *T = malloc(N_x * sizeof(double));
+    double *P = malloc(N_x * sizeof(double));
+    double *e = malloc(N_x * sizeof(double));
 
 
     for (int i = 0; i < N_z; ++i) {
@@ -138,6 +142,18 @@ int main() {
         eps[i] = malloc(N_x * sizeof(complex double));
 
     }
+
+    double a =  6.1121;
+    double b_e =  18.678;
+    double c =  257.14;
+    double d =  234.5;
+    double t = 20; //Celsius
+    double P_0 =
+    for (int j = 1; j < N_x-1; j++) {
+        P[j] = P_0;
+        e[j] = Humidity / 100 * a * exp((b_e - t / d) * t / (t + c))*(1+1.e-4*(7.2+P[j]*(0.032 + 5.9*1.e-6*t*t)));
+    }
+
 
     double maximum_u=0;
 
@@ -192,7 +208,7 @@ int main() {
             else {
                 array_A[l] = A;
                 array_C[l] = C;
-                standard_refraction(refractive_index[k], current_x, l);
+                standard_refraction(refractive_index[k], T, P, e, l);
                 looyeng_model(eps[k], refractive_index[k], eps_1, phi_1, current_x, l);
                 //duct_refraction(refractive_index[k], current_x,l);
                 //linear_refraction(refractive_index[k], current_x,l);
@@ -263,6 +279,9 @@ int main() {
     free(array_C);
     free(array_D);
     free(phi_1);
+    free(T);
+    free(P);
+    free(e);
 
     printf("Convergence check : %d ", counter);
     clock_t end = clock();
