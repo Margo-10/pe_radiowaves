@@ -266,7 +266,7 @@ int main() {
     for (int i = 0; i<N_z; i++) {
         for (int j = 0; j<N_x; j++){
             double current_z = z_begin + dz * i;
-            fprintf(file, "%1.4e ", 20*log(cabs(array_u[i][j]))+ 20*log(4*M_PI) + 10*log(current_z)-30*log(3.e8/source_frequency));
+            fprintf(file, "%1.6e ", 20*log(cabs(array_u[i][j]))+ 20*log(4*M_PI) + 10*log(current_z)-30*log(3.e8/source_frequency));
         }
 
         fprintf(file,"\n");
