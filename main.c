@@ -219,7 +219,7 @@ int main() {
                 array_A[l] = A;
                 array_C[l] = C;
                 standard_refraction(refractive_index[k], T, P, e, l);
-                looyeng_model(eps[k], refractive_index[k], eps_1, phi_1, current_x, l);
+                //looyeng_model(eps[k], refractive_index[k], eps_1, phi_1, current_x, l);
                 //duct_refraction(refractive_index[k], current_x,l);
                 //linear_refraction(refractive_index[k], current_x,l);
                 //exponential_refraction(refractive_index[k], current_x, l);
@@ -266,7 +266,7 @@ int main() {
     for (int i = 0; i<N_z; i++) {
         for (int j = 0; j<N_x; j++){
             double current_z = z_begin + dz * i;
-            fprintf(file, "%1.6e ", 20*log(cabs(array_u[i][j]))+ 20*log(4*M_PI) + 10*log(current_z)-30*log(3.e8/source_frequency));
+            fprintf(file, "%1.13e ", 20*log(cabs(array_u[i][j]))+ 20*log(4*M_PI) + 10*log(current_z)-30*log(3.e8/source_frequency));
         }
 
         fprintf(file,"\n");
