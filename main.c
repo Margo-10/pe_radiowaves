@@ -9,9 +9,9 @@
 
 
 //SYSTEM SI
-int N_z=2000;
-int N_x=2000;
-double x_begin=0,x_end=100.0, z_begin=0,z_end=50000.0;
+int N_z=1000;
+int N_x=300;
+double x_begin=0,x_end=100.0, z_begin=0,z_end=6000.0;
 double n_0 = 1.00028;
 double pol=1; // Polarization type: 1 for 'Horz.' or 0 for 'Vert.'
 
