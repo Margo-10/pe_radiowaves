@@ -9,17 +9,17 @@
 
 
 //SYSTEM SI
-int N_z=7000;
-int N_x=10000;
+int N_z=4000;
+int N_x=8000;
 double x_begin=0,x_end=800.0, z_begin=0,z_end=150000.0;
 double n_0 = 1.00028;
 double pol=1; // Polarization type: 1 for 'Horz.' or 0 for 'Vert.'
 
 // source parameters
-double source_height = 100.0;
-double gamma_horiz=12*M_PI/180; //elv
-double gamma_rastvor=2*M_PI/180; //bw
-double a_0 = 8.2e-6;
+double source_height = 90.0;
+double gamma_horiz=7*M_PI/180; //elv
+double gamma_rastvor=0.5*M_PI/180; //bw
+double a_0 = 1.2e-6;
 double source_frequency = 3.e9;
 //complex double eps_1 = 4.56+I*0.251;
 double b=0.28;
@@ -39,7 +39,7 @@ double Humidity = 0;
 //standard
 void standard_refraction(complex double* refractive_index, double T, double* P, double* e, int l){
 
-    refractive_index [l]  = 77.6*P[l]/T - 5.6*e[l]/T + 3.75*1.e5*e[l]/(T*T);//77.6*P[l]/T[l] - 5.6*e[l]/T[l] + 3.75*1.e5*e[l]/(T[l]*T[l]); //cpow ((1.0 + (315.0*cexp(-1.36*current_x*1.e-4))*1.e-6),2); //it is square refractive index n^2
+    refractive_index [l]  = 77.6*P[l]/T - 5.6*e[l]/T + 3.75*1.e5*e[l]/(T*T);//77.6*P[l]/T[l] - 5.6*e[l]/T[l] + 3.75*1.e5*e[l]/(T[l]*T[l]); // //it is square refractive index n^2
 
 }
 
@@ -51,8 +51,10 @@ void looyeng_model(complex double* eps, complex double* refractive_index, comple
 //    else
 //        phi_1[l] = C_*pow(h_0/current_x,b)/(rho*pow(V_0,gamma_));
 
-    phi_1[l] = C_*rho/pow(V, gamma_);
-    eps[l] = cpow((phi_1[l]*(cpow(eps_1,1.0/3.0)-cpow(refractive_index[l],1.0/3.0)) + cpow(refractive_index[l],1.0/3.0)), 3); //it is square refractive index n^2
+    eps[l] = refractive_index[l];
+
+//    phi_1[l] = C_*rho/pow(V, gamma_);
+//    eps[l] = cpow((phi_1[l]*(cpow(eps_1,1.0/3.0)-cpow(refractive_index[l],1.0/3.0)) + cpow(refractive_index[l],1.0/3.0)), 3); //it is square refractive index n^2
 }
 
 void tridiag_matrix_algorithm(complex double* array_A, complex double* array_B, complex double* array_C, complex double* array_D,complex double* array_u){
@@ -83,14 +85,14 @@ void tridiag_matrix_algorithm(complex double* array_A, complex double* array_B, 
 }
 
 
-//
-//
+
+
 //ducting
-//void duct_refraction(complex double* refractive_index, double current_x,int l){
-//
-//    refractive_index [l] = 1 - a_0*current_x; //it is square refractive index n^2
-//
-//}
+void duct_refraction(complex double* refractive_index, double current_x,int l){
+
+    refractive_index [l] = 1 - a_0*current_x; //it is square refractive index n^2
+
+}
 
 
 //kharadly_and_jackson_model
@@ -218,9 +220,10 @@ int main() {
             else {
                 array_A[l] = A;
                 array_C[l] = C;
-                standard_refraction(refractive_index[k], T, P, e, l);
-                //looyeng_model(eps[k], refractive_index[k], eps_1, phi_1, current_x, l);
-                //duct_refraction(refractive_index[k], current_x,l);
+                //standard_refraction(refractive_index[k], T, P, e, l);
+
+                duct_refraction(refractive_index[k], current_x,l);
+                looyeng_model(eps[k], refractive_index[k], eps_1, phi_1, current_x, l);
                 //linear_refraction(refractive_index[k], current_x,l);
                 //exponential_refraction(refractive_index[k], current_x, l);
                 //kharadly_and_jackson_model(eps[k], refractive_index[k], eps_1, phi_1, current_x, l);
@@ -266,7 +269,7 @@ int main() {
     for (int i = 0; i<N_z; i++) {
         for (int j = 0; j<N_x; j++){
             double current_z = z_begin + dz * i;
-            fprintf(file, "%1.18e ", cabs(array_u[i][j]));
+            fprintf(file, "%1.5e ", cabs(array_u[i][j]));
             //fprintf(file, "%1.13e ", 20*log(cabs(array_u[i][j]))+ 20*log(4*M_PI) + 10*log(current_z)-30*log(3.e8/source_frequency));
         }
 
