@@ -9,8 +9,8 @@
 
 
 //SYSTEM SI
-int N_z=8000;
-int N_x=6000;
+int N_z=5100;
+int N_x=8100;
 double x_begin=0,x_end=800.0, z_begin=0,z_end=250000.0;
 double n_0 = 1.00028;
 double pol=1; // Polarization type: 1 for 'Horz.' or 0 for 'Vert.'
@@ -37,9 +37,9 @@ double Humidity = 0;
 
 
 //standard
-void standard_refraction(complex double* refractive_index, double* T, double* P, double* e, int l){
+void standard_refraction(complex double* refractive_index, double T, double* P, double* e, int l){
 
-    refractive_index [l]  = 77.6*P[l]/T[l] - 5.6*e[l]/T[l] + 3.75*1.e5*e[l]/(T[l]*T[l]); //cpow ((1.0 + (315.0*cexp(-1.36*current_x*1.e-4))*1.e-6),2); //it is square refractive index n^2
+    refractive_index [l]  = 77.6*P[l]/T - 5.6*e[l]/T + 3.75*1.e5*e[l]/(T*T);//77.6*P[l]/T[l] - 5.6*e[l]/T[l] + 3.75*1.e5*e[l]/(T[l]*T[l]); //cpow ((1.0 + (315.0*cexp(-1.36*current_x*1.e-4))*1.e-6),2); //it is square refractive index n^2
 
 }
 
@@ -131,7 +131,7 @@ int main() {
     complex double *array_C = malloc(N_x * sizeof(complex double));
     complex double *array_D = malloc(N_x * sizeof(complex double));
     double *phi_1 = malloc(N_x * sizeof(double));
-    double *T = malloc(N_x * sizeof(double));
+//    double *T = malloc(N_x * sizeof(double));
     double *P = malloc(N_x * sizeof(double));
     double *e = malloc(N_x * sizeof(double));
 
@@ -149,10 +149,18 @@ int main() {
     double c =  257.14;
     double d =  234.5;
     double t = 20; //Celsius
+    double T = t + 273;
+    double p_0 = 1013.25; //gPa
+    double g = 9.81;
+    double R = 8.31;
+    double M = 0.02897; // kg/mol;
+    double h_sea = 0;
+
 
     for (int j = 1; j < N_x-1; j++) {
-//        T[j] =
-//        P[j] = ;
+//        T[j] = t + 273;
+        double current_x = x_begin + j*dx;
+        P[j] = p_0*exp(-M*g*(current_x-h_sea)/(R*T));
         e[j] = Humidity / 100 * a * exp((b_e - t / d) * t / (t + c))*(1+1.e-4*(7.2+P[j]*(0.032 + 5.9*1.e-6*t*t)));
     }
 
@@ -238,17 +246,17 @@ int main() {
 
         tridiag_matrix_algorithm(array_A, array_B, array_C, array_D, array_u[k]);
 
-//        int h = (int)(0.75 * N_x);
-//        //Hanning window
-//        for (int ind = h; ind < N_x; ind++) {
-//            double current_xh = x_begin + dx * ind;
-//            array_u[k][ind] *= csin(2 * M_PI * current_xh / x_end) * csin(2 * M_PI * current_xh / x_end);
-//        }
+        int h = (int)(0.75 * N_x);
+        //Hanning window
+        for (int ind = h; ind < N_x; ind++) {
+            double current_xh = x_begin + dx * ind;
+            array_u[k][ind] *= csin(2 * M_PI * current_xh / x_end) * csin(2 * M_PI * current_xh / x_end);
+        }
 
     }
 
     //printf("hello \n");
-    file = fopen("15tilt_0.5beam_looyenga_nz10.txt", "w+");
+    file = fopen("looyenga_TEST.txt", "w+");
 
     if (file == NULL) {
         printf("FileIsNull\n");
@@ -282,7 +290,7 @@ int main() {
     free(array_C);
     free(array_D);
     free(phi_1);
-    free(T);
+//    free(T);
     free(P);
     free(e);
 
