@@ -9,7 +9,7 @@
 
 
 //SYSTEM SI
-int N_z=10000;
+int N_z=2000;
 int N_x=2000;
 double x_begin=0,x_end=100.0, z_begin=0,z_end=50000.0;
 double n_0 = 1.00028;
@@ -52,7 +52,7 @@ void looyeng_model(complex double* eps, complex double* refractive_index, comple
 //        phi_1[l] = C_*pow(h_0/current_x,b)/(rho*pow(V_0,gamma_));
 
     eps[l] = refractive_index[l];
-    phi_1[l] = C_*rho/pow(V, gamma_);
+    phi_1[l] = C_/(pow(V, gamma_)*rho);
     eps[l] = cpow((phi_1[l]*(cpow(eps_1,1.0/3.0)-cpow(refractive_index[l],1.0/3.0)) + cpow(refractive_index[l],1.0/3.0)), 3); //it is square refractive index n^2
 }
 
