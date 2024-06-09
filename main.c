@@ -9,16 +9,16 @@
 
 
 //SYSTEM SI
-int N_z=1000;
-int N_x=300;
-double x_begin=0,x_end=100.0, z_begin=0,z_end=6000.0;
+int N_z=42000;
+int N_x=2000;
+double x_begin=0,x_end=800.0, z_begin=0,z_end=250000.0;
 double n_0 = 1.00028;
 double pol=1; // Polarization type: 1 for 'Horz.' or 0 for 'Vert.'
 
 // source parameters
-double source_height = 30.0;
-double gamma_horiz=7*M_PI/180; //elv
-double gamma_rastvor=0.5*M_PI/180; //bw
+double source_height = 100.0;
+double gamma_horiz=0*M_PI/180; //elv
+double gamma_rastvor=2*M_PI/180; //bw
 double a_0 = 1.2e-6;
 double source_frequency = 3.e9;
 //complex double eps_1 = 4.56+I*0.251;
@@ -150,7 +150,7 @@ int main() {
     double c =  257.14;
     double d =  234.5;
     double t = 20; //Celsius
-    double T = t + 273;
+    double T = t + 273.15;
     double p_0 = 1013.25; //gPa
     double g = 9.81;
     double R = 8.31;
@@ -258,7 +258,7 @@ int main() {
     }
 
     //printf("hello \n");
-    file = fopen("looyenga_TEST.txt", "w+");
+    file = fopen("looyenga_TEST_new.txt", "w+");
 
     if (file == NULL) {
         printf("FileIsNull\n");
