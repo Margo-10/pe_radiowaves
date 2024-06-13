@@ -51,7 +51,7 @@ void looyeng_model(complex double* eps, complex double* refractive_index, comple
 //    else
 //        phi_1[l] = C_*pow(h_0/current_x,b)/(rho*pow(V_0,gamma_));
 
-    eps[l] = refractive_index[l];
+
     phi_1[l] = C_/(pow(V, gamma_)*rho);
     eps[l] = cpow((phi_1[l]*(cpow(eps_1,1.0/3.0)-cpow(refractive_index[l],1.0/3.0)) + cpow(refractive_index[l],1.0/3.0)), 3); //it is square refractive index n^2
 }
@@ -158,7 +158,7 @@ int main() {
     double h_sea = 0;
 
 
-    for (int j = 1; j < N_x-1; j++) {
+    for (int j = 0; j < N_x; j++) {
 //        T[j] = t + 273;
         double current_x = x_begin + j*dx;
         P[j] = p_0*exp(-M*g*(current_x-h_sea)/(R*T));
@@ -269,7 +269,7 @@ int main() {
         for (int j = 0; j<N_x; j++){
             double current_z = z_begin + dz * i;
             fprintf(file, "%1.5e ", cabs(array_u[i][j]));
-            //fprintf(file, "%1.13e ", 20*log(cabs(array_u[i][j]))+ 20*log(4*M_PI) + 10*log(current_z)-30*log(3.e8/source_frequency));
+            //fprintf(file, "%1.13e ", -20*log(cabs(array_u[i][j]))+ 20*log(4*M_PI) + 10*log(current_z)-30*log(3.e8/source_frequency));
         }
 
         fprintf(file,"\n");
