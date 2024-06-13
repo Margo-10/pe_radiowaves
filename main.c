@@ -187,7 +187,7 @@ int main() {
 //                +cexp(I*k_0*current_x_1*csin(gamma_horiz_5)-pow(current_x_1-source_height,2)/pow(source_omega,2)) + cpow(-1,pol)*cexp(I*k_0*(-current_x_1)*csin(gamma_horiz_5)-pow(-current_x_1-source_height,2)/pow(source_omega,2));
         //printf("%0.12f + i*(%0.12f)\n", creal(array_u[0][j]), cimag(array_u[0][j]));
         // if (cabs(array_u[0][j])<1)
-        //maximum_u = fmax(cabs(array_u[0][j]),maximum_u);
+        maximum_u = fmax(cabs(array_u[0][j]),maximum_u);
         // printf("endof: %f\n",maximum_u);
 
     }
@@ -268,7 +268,7 @@ int main() {
     for (int i = 0; i<N_z; i++) {
         for (int j = 0; j<N_x; j++){
             double current_z = z_begin + dz * i;
-            fprintf(file, "%1.5e ", cabs(array_u[i][j]));
+            fprintf(file, "%1.6e ", cabs(array_u[i][j]/maximum_u));
             //fprintf(file, "%1.13e ", -20*log(cabs(array_u[i][j]))+ 20*log(4*M_PI) + 10*log(current_z)-30*log(3.e8/source_frequency));
         }
 
