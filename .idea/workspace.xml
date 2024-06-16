@@ -18,7 +18,11 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="89719a23-174e-41b4-9752-0886d4621369" name="Changes" comment="h" />
+    <list default="true" id="89719a23-174e-41b4-9752-0886d4621369" name="Changes" comment="h">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/main.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pe_radiowaves.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/pe_radiowaves.ipynb" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -199,6 +203,7 @@
       <workItem from="1717970089376" duration="3136000" />
       <workItem from="1718021871378" duration="2033000" />
       <workItem from="1718209356644" duration="7729000" />
+      <workItem from="1718543777162" duration="795000" />
     </task>
     <task id="LOCAL-00042" summary="h">
       <option name="closed" value="true" />
