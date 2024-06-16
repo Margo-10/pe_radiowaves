@@ -9,15 +9,15 @@
 
 
 //SYSTEM SI
-int N_z=42000;
-int N_x=2000;
-double x_begin=0,x_end=800.0, z_begin=0,z_end=250000.0;
+int N_z=16810;
+int N_x=7500;
+double x_begin=0,x_end=3000.0, z_begin=0,z_end=100000.0;
 double n_0 = 1.00028;
 double pol=1; // Polarization type: 1 for 'Horz.' or 0 for 'Vert.'
 
 // source parameters
 double source_height = 100.0;
-double gamma_horiz=0*M_PI/180; //elv
+double gamma_horiz=14*M_PI/180; //elv
 double gamma_rastvor=2*M_PI/180; //bw
 double a_0 = 1.2e-6;
 double source_frequency = 3.e9;
@@ -28,7 +28,7 @@ double rho=2440.0;
 //visibility
 double V_0 = 6.5; //meters
 double h_0 = 2.0;
-double V = 10;
+double V = 100;
 
 //for Libya and Sudan
 double gamma_ = 1.07;
@@ -52,7 +52,7 @@ void looyeng_model(complex double* eps, complex double* refractive_index, comple
 //        phi_1[l] = C_*pow(h_0/current_x,b)/(rho*pow(V_0,gamma_));
 
 
-    phi_1[l] = C_/(pow(V, gamma_)*rho);
+    phi_1[l] = 0; //C_/(pow(V, gamma_)*rho);
     eps[l] = cpow((phi_1[l]*(cpow(eps_1,1.0/3.0)-cpow(refractive_index[l],1.0/3.0)) + cpow(refractive_index[l],1.0/3.0)), 3); //it is square refractive index n^2
 }
 
@@ -258,7 +258,7 @@ int main() {
     }
 
     //printf("hello \n");
-    file = fopen("looyenga_TEST_ground_10.txt", "w+");
+    file = fopen("looyenga_TEST_satellite_without_dust3ghz.txt", "w+");
 
     if (file == NULL) {
         printf("FileIsNull\n");
