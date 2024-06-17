@@ -9,7 +9,7 @@
 
 
 //SYSTEM SI
-int N_z=10;//16810;
+int N_z=16810;
 int N_x=7500;
 double x_begin=0,x_end=3000.0, z_begin=0,z_end=100000.0;
 double n_0 = 1.00028;
@@ -39,7 +39,7 @@ double Humidity = 0;
 //standard
 void standard_refraction(complex double* refractive_index, double T, double* P, double* e, int l){
 
-    refractive_index [l]  = 1 + (77.6*P[l]/T - 5.6*e[l]/T + 3.75*1.e5*e[l]/(T*T))*1.e-6;//77.6*P[l]/T[l] - 5.6*e[l]/T[l] + 3.75*1.e5*e[l]/(T[l]*T[l]); // //it is square refractive index n^2
+    refractive_index [l]  = cpow(1 + (77.6*P[l]/T - 5.6*e[l]/T + 3.75*1.e5*e[l]/(T*T))*1.e-6, 2);//77.6*P[l]/T[l] - 5.6*e[l]/T[l] + 3.75*1.e5*e[l]/(T[l]*T[l]); // //it is square refractive index n^2
 
 }
 
@@ -118,8 +118,8 @@ int main() {
     clock_t start = clock();
     double dx = (x_end - x_begin) / N_x, dz = (z_end - z_begin) / N_z;
     complex double k_0 = 2.0*M_PI*source_frequency/3.e8;
-    complex double B = -1.0 /(dx*dx) + (2.0*I*k_0)/dz + k_0*k_0*(n_0*n_0-1.0);
-    complex double A = 1.0 /(2.0*dx*dx), C = 1.0 /(2.0*dx*dx);
+    complex double B = -1.0 /(dx*dx) + (2.0*I*k_0)/dz + k_0*k_0*(n_0*n_0-1.0)/2;
+    complex double A = 1.0/(2.0*dx*dx), C = 1.0/(2.0*dx*dx);
     complex double eps_1 = (4.56 + 0.04*Humidity - 7.78*pow(Humidity,2)*1.e-4 + 5.56*pow(Humidity,3)*1.e-6) - I*(0.251+ 0.02*Humidity - 3.71*pow(Humidity,2)*1.e-4 + 2.76*pow(Humidity,3)*1.e-6);
 
 
@@ -242,12 +242,11 @@ int main() {
 
             }
 
-
-
         }
 
         tridiag_matrix_algorithm(array_A, array_B, array_C, array_D, array_u[k]);
-
+//        printf("%.10f + i%.10f\n", creal(array_u[2][251]), cimag(array_u[2][251]));
+//        printf("%10.7e ",cabs(array_u[2][251]));
         int h = (int)(0.75 * N_x);
         //Hanning window
         for (int ind = h; ind < N_x; ind++) {
@@ -257,27 +256,28 @@ int main() {
 
     }
 
-//
-//    //printf("hello \n");
-//    file = fopen("looyenga_TEST_satellite_30_3ghz.txt", "w+");
-//
-//    if (file == NULL) {
-//        printf("FileIsNull\n");
-//        return 1;
-//    }
-//
-//    for (int i = 0; i<N_z; i++) {
-//        for (int j = 0; j<N_x; j++){
-//            double current_z = z_begin + dz * i;
-//            fprintf(file, "%1.12e ", cabs(array_u[i][j])/cabs(maximum_u));
-//            //fprintf(file, "%1.13e ", -20*log(cabs(array_u[i][j]))+ 20*log(4*M_PI) + 10*log(current_z)-30*log(3.e8/source_frequency));
-//        }
-//
-//        fprintf(file,"\n");
-//    }
-//
-//
-//    fclose(file);
+
+
+    //printf("hello \n");
+    file = fopen("looyenga_TEST_satellite_30_3ghz.txt", "w+");
+
+    if (file == NULL) {
+        printf("FileIsNull\n");
+        return 1;
+    }
+
+    for (int i = 0; i<N_z; i++) {
+        for (int j = 0; j<N_x; j++){
+            double current_z = z_begin + dz * i;
+            fprintf(file, "%1.12e ", cabs(array_u[i][j])/cabs(maximum_u));
+            //fprintf(file, "%1.13e ", -20*log(cabs(array_u[i][j]))+ 20*log(4*M_PI) + 10*log(current_z)-30*log(3.e8/source_frequency));
+        }
+
+        fprintf(file,"\n");
+    }
+
+
+    fclose(file);
 
 
     for (int i = 0; i < N_z; i++) {
