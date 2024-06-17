@@ -28,7 +28,7 @@ double rho=2440.0;
 //visibility
 double V_0 = 6.5; //meters
 double h_0 = 2.0;
-double V = 100;
+double V = 30;
 
 //for Libya and Sudan
 double gamma_ = 1.07;
@@ -45,15 +45,16 @@ void standard_refraction(complex double* refractive_index, double T, double* P, 
 
 
 //looyeng_model
-void looyeng_model(complex double* eps, complex double* refractive_index, complex double eps_1, double* phi_1,  double current_x, int l){
+void looyeng_model(complex double* eps, complex double* refractive_index, complex double eps_1, complex double* phi_1,  double current_x, int l){
 //    if (current_x<2.0)
 //        phi_1[l] = C_*pow(h_0/h_0,b)/(rho*pow(V_0,gamma_));
 //    else
 //        phi_1[l] = C_*pow(h_0/current_x,b)/(rho*pow(V_0,gamma_));
 
 
-    phi_1[l] = 0; //C_/(pow(V, gamma_)*rho);
+    phi_1[l] = C_/(pow(V, gamma_)*rho);
     eps[l] = cpow((phi_1[l]*(cpow(eps_1,1.0/3.0)-cpow(refractive_index[l],1.0/3.0)) + cpow(refractive_index[l],1.0/3.0)), 3); //it is square refractive index n^2
+    //printf("%.10f + i%.10f\n", creal(eps[l]), cimag(eps[l]));
 }
 
 void tridiag_matrix_algorithm(complex double* array_A, complex double* array_B, complex double* array_C, complex double* array_D,complex double* array_u){
@@ -131,7 +132,7 @@ int main() {
     complex double *array_B = malloc(N_x * sizeof(complex double));
     complex double *array_C = malloc(N_x * sizeof(complex double));
     complex double *array_D = malloc(N_x * sizeof(complex double));
-    double *phi_1 = malloc(N_x * sizeof(double));
+    complex double *phi_1 = malloc(N_x * sizeof(complex double));
 //    double *T = malloc(N_x * sizeof(double));
     double *P = malloc(N_x * sizeof(double));
     double *e = malloc(N_x * sizeof(double));
@@ -258,7 +259,7 @@ int main() {
     }
 
     //printf("hello \n");
-    file = fopen("looyenga_TEST_satellite_without_dust3ghz.txt", "w+");
+    file = fopen("looyenga_TEST_satellite_30_3ghz.txt", "w+");
 
     if (file == NULL) {
         printf("FileIsNull\n");
@@ -268,7 +269,7 @@ int main() {
     for (int i = 0; i<N_z; i++) {
         for (int j = 0; j<N_x; j++){
             double current_z = z_begin + dz * i;
-            fprintf(file, "%1.6e ", cabs(array_u[i][j]/maximum_u));
+            fprintf(file, "%1.12e ", cabs(array_u[i][j])/cabs(maximum_u));
             //fprintf(file, "%1.13e ", -20*log(cabs(array_u[i][j]))+ 20*log(4*M_PI) + 10*log(current_z)-30*log(3.e8/source_frequency));
         }
 
