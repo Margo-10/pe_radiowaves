@@ -17,7 +17,7 @@ double pol=1; // Polarization type: 1 for 'Horz.' or 0 for 'Vert.'
 
 // source parameters
 double source_height = 30.0;
-double gamma_horiz=14*M_PI/180; //elv
+double gamma_horiz=5*M_PI/180; //elv
 double gamma_rastvor=2*M_PI/180; //bw
 double a_0 = 1.2e-6;
 double source_frequency = 3.e9;
@@ -30,12 +30,12 @@ double V_0 = 6.5; //meters
 double h_0 = 2.0;
 
 
-double V = 30;
+double V = 100;
 
 //for Libya and Sudan
 double gamma_ = 1.07;
 double C_ = 2.3*1.e-2;
-double Humidity = 60;
+double Humidity = 20;
 
 
 //standard
@@ -161,7 +161,6 @@ int main() {
 
 
     for (int j = 0; j < N_x; j++) {
-//        T[j] = t + 273;
         double current_x = x_begin + j*dx;
         P[j] = p_0*exp(-M*g*(current_x-h_sea)/(R*T));
         e[j] = Humidity / 100 * a * exp((b_e - t / d) * t / (t + c))*(1+1.e-4*(7.2+P[j]*(0.032 + 5.9*1.e-6*t*t)));
@@ -189,7 +188,7 @@ int main() {
 //                +cexp(I*k_0*current_x_1*csin(gamma_horiz_5)-pow(current_x_1-source_height,2)/pow(source_omega,2)) + cpow(-1,pol)*cexp(I*k_0*(-current_x_1)*csin(gamma_horiz_5)-pow(-current_x_1-source_height,2)/pow(source_omega,2));
         //printf("%0.12f + i*(%0.12f)\n", creal(array_u[0][j]), cimag(array_u[0][j]));
         // if (cabs(array_u[0][j])<1)
-        maximum_u = fmax(cabs(array_u[0][j]),maximum_u);
+        //maximum_u = fmax(cabs(array_u[0][j]),maximum_u);
         // printf("endof: %f\n",maximum_u);
 
     }
@@ -258,40 +257,40 @@ int main() {
 
     }
 
-    double max_k = 0;
-    for (int k = 0; k < N_z; k++) {
-        for (int h = 0; h < N_x; h++) {
-            double current_value = cabs(array_u[k][h_max]);
-            if (current_value > U_up) {
-                U_up = current_value;
-                //max_k = k;
-            }
-        }
-    }
-    max_k = z_begin + dz * max_k;
-    printf("Частное: %f \n",U_up/maximum_u); //Расстояние: %f grbg %fmax_k, maximum_u
-
-
-//    //printf("hello \n");
-//    file = fopen("looyenga_TEST_satellite_100_3ghz.txt", "w+");
-//
-//    if (file == NULL) {
-//        printf("FileIsNull\n");
-//        return 1;
-//    }
-//
-//    for (int i = 0; i<N_z; i++) {
-//        for (int j = 0; j<N_x; j++){
-//            double current_z = z_begin + dz * i;
-//            fprintf(file, "%1.12e ", cabs(array_u[i][1])/cabs(maximum_u));
-//            //fprintf(file, "%1.13e ", -20*log(cabs(array_u[i][j]))+ 20*log(4*M_PI) + 10*log(current_z)-30*log(3.e8/source_frequency));
+//    //double max_k = 0;
+//    for (int k = 0; k < N_z; k++) {
+//        for (int h = 0; h < N_x; h++) {
+//            double current_value = cabs(array_u[k][h_max]);
+//            if (current_value > U_up) {
+//                U_up = current_value;
+//                //max_k = k;
+//            }
 //        }
-//
-//        fprintf(file,"\n");
 //    }
-//
-//
-//    fclose(file);
+//    //max_k = z_begin + dz * max_k;
+//    printf(": %f ",U_up); //Расстояние: %f grbg %fmax_k, maximum_u
+
+
+
+    file = fopen("looyenga_TEST_satellite_100_3ghz_new5.txt", "w+");
+
+    if (file == NULL) {
+        printf("FileIsNull\n");
+        return 1;
+    }
+
+    for (int i = 0; i<N_z; i++) {
+        for (int j = 0; j<N_x; j++){
+            double current_z = z_begin + dz * i;
+            fprintf(file, "%1.7e ", cabs(array_u[i][j]));
+            //fprintf(file, "%1.13e ", -20*log(cabs(array_u[i][j]))+ 20*log(4*M_PI) + 10*log(current_z)-30*log(3.e8/source_frequency));
+        }
+
+        fprintf(file,"\n");
+    }
+
+
+    fclose(file);
 
 
     for (int i = 0; i < N_z; i++) {
