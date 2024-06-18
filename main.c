@@ -28,7 +28,7 @@ double rho=2440.0;
 //visibility
 double V_0 = 6.5; //meters
 double h_0 = 2.0;
-double V = 30;
+double V = 100;
 
 //for Libya and Sudan
 double gamma_ = 1.07;
@@ -52,7 +52,7 @@ void looyeng_model(complex double* eps, complex double* refractive_index, comple
 //        phi_1[l] = C_*pow(h_0/current_x,b)/(rho*pow(V_0,gamma_));
 
 
-    phi_1[l] =  C_/(pow(V, gamma_)*rho);
+    phi_1[l] = 0;//  C_/(pow(V, gamma_)*rho);
     eps[l] = cpow((phi_1[l]*(cpow(eps_1,1.0/3.0)-cpow(refractive_index[l],1.0/3.0)) + cpow(refractive_index[l],1.0/3.0)), 3); //it is square refractive index n^2
 }
 
@@ -120,7 +120,7 @@ int main() {
     complex double k_0 = 2.0*M_PI*source_frequency/3.e8;
     complex double B = -1.0 /(dx*dx) + (2.0*I*k_0)/dz + k_0*k_0*(n_0*n_0-1.0)/2;
     complex double A = 1.0/(2.0*dx*dx), C = 1.0/(2.0*dx*dx);
-    complex double eps_1 = (4.56 + 0.04*Humidity - 7.78*pow(Humidity,2)*1.e-4 + 5.56*pow(Humidity,3)*1.e-6) - I*(0.251+ 0.02*Humidity - 3.71*pow(Humidity,2)*1.e-4 + 2.76*pow(Humidity,3)*1.e-6);
+    complex double eps_1 = (4.56 + 0.04*Humidity - 7.78*pow(Humidity,2)*1.e-4 + 5.56*pow(Humidity,3)*1.e-6) + I*(0.251+ 0.02*Humidity - 3.71*pow(Humidity,2)*1.e-4 + 2.76*pow(Humidity,3)*1.e-6);
 
 
     FILE *file = NULL;
@@ -167,7 +167,7 @@ int main() {
 
 
     double maximum_u=0;
-
+    double U_up = 0;
 // set initial values
     double source_omega = sqrt(2.0*log(2))/(k_0*sin(gamma_rastvor/2));
     double gamma_horiz_1 = 5*3.14/180;
@@ -254,30 +254,34 @@ int main() {
             array_u[k][ind] *= csin(2 * M_PI * current_xh / x_end) * csin(2 * M_PI * current_xh / x_end);
         }
 
+
+        U_up =  fmax(cabs(array_u[k][h-1]),U_up);
+
     }
 
+    printf("%f",U_up/maximum_u);
 
 
-    //printf("hello \n");
-    file = fopen("looyenga_TEST_satellite_30_3ghz.txt", "w+");
-
-    if (file == NULL) {
-        printf("FileIsNull\n");
-        return 1;
-    }
-
-    for (int i = 0; i<N_z; i++) {
-        for (int j = 0; j<N_x; j++){
-            double current_z = z_begin + dz * i;
-            fprintf(file, "%1.12e ", cabs(array_u[i][j])/cabs(maximum_u));
-            //fprintf(file, "%1.13e ", -20*log(cabs(array_u[i][j]))+ 20*log(4*M_PI) + 10*log(current_z)-30*log(3.e8/source_frequency));
-        }
-
-        fprintf(file,"\n");
-    }
-
-
-    fclose(file);
+//    //printf("hello \n");
+//    file = fopen("looyenga_TEST_satellite_100_3ghz.txt", "w+");
+//
+//    if (file == NULL) {
+//        printf("FileIsNull\n");
+//        return 1;
+//    }
+//
+//    for (int i = 0; i<N_z; i++) {
+//        for (int j = 0; j<N_x; j++){
+//            double current_z = z_begin + dz * i;
+//            fprintf(file, "%1.12e ", cabs(array_u[i][1])/cabs(maximum_u));
+//            //fprintf(file, "%1.13e ", -20*log(cabs(array_u[i][j]))+ 20*log(4*M_PI) + 10*log(current_z)-30*log(3.e8/source_frequency));
+//        }
+//
+//        fprintf(file,"\n");
+//    }
+//
+//
+//    fclose(file);
 
 
     for (int i = 0; i < N_z; i++) {
