@@ -16,7 +16,7 @@ double n_0 = 1.00028;
 double pol=1; // Polarization type: 1 for 'Horz.' or 0 for 'Vert.'
 
 // source parameters
-double source_height = 100.0;
+double source_height = 30.0;
 double gamma_horiz=14*M_PI/180; //elv
 double gamma_rastvor=2*M_PI/180; //bw
 double a_0 = 1.2e-6;
@@ -28,12 +28,12 @@ double rho=2440.0;
 //visibility
 double V_0 = 6.5; //meters
 double h_0 = 2.0;
-double V = 100;
+double V = 30;
 
 //for Libya and Sudan
 double gamma_ = 1.07;
 double C_ = 2.3*1.e-2;
-double Humidity = 0;
+double Humidity = 40;
 
 
 //standard
@@ -52,7 +52,7 @@ void looyeng_model(complex double* eps, complex double* refractive_index, comple
 //        phi_1[l] = C_*pow(h_0/current_x,b)/(rho*pow(V_0,gamma_));
 
 
-    phi_1[l] = 0;//  C_/(pow(V, gamma_)*rho);
+    phi_1[l] =  C_/(pow(V, gamma_)*rho);
     eps[l] = cpow((phi_1[l]*(cpow(eps_1,1.0/3.0)-cpow(refractive_index[l],1.0/3.0)) + cpow(refractive_index[l],1.0/3.0)), 3); //it is square refractive index n^2
 }
 
@@ -165,7 +165,7 @@ int main() {
         e[j] = Humidity / 100 * a * exp((b_e - t / d) * t / (t + c))*(1+1.e-4*(7.2+P[j]*(0.032 + 5.9*1.e-6*t*t)));
     }
 
-
+    int h_max = (int)(0.75 * N_x);
     double maximum_u=0;
     double U_up = 0;
 // set initial values
@@ -247,19 +247,27 @@ int main() {
         tridiag_matrix_algorithm(array_A, array_B, array_C, array_D, array_u[k]);
 //        printf("%.10f + i%.10f\n", creal(array_u[2][251]), cimag(array_u[2][251]));
 //        printf("%10.7e ",cabs(array_u[2][251]));
-        int h = (int)(0.75 * N_x);
+
         //Hanning window
-        for (int ind = h; ind < N_x; ind++) {
+        for (int ind = h_max; ind < N_x; ind++) {
             double current_xh = x_begin + dx * ind;
             array_u[k][ind] *= csin(2 * M_PI * current_xh / x_end) * csin(2 * M_PI * current_xh / x_end);
         }
 
-
-        U_up =  fmax(cabs(array_u[k][h-1]),U_up);
-
     }
 
-    printf("%f",U_up/maximum_u);
+    double max_k = 0;
+    for (int k = 0; k < N_z; k++) {
+        for (int h = 0; h < N_x; h++) {
+            double current_value = cabs(array_u[k][h_max]);
+            if (current_value > U_up) {
+                U_up = current_value;
+                //max_k = k;
+            }
+        }
+    }
+    max_k = z_begin + dz * max_k;
+    printf("Частное: %f \n",U_up/maximum_u); //Расстояние: %f grbg %fmax_k, maximum_u
 
 
 //    //printf("hello \n");
