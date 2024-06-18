@@ -17,7 +17,7 @@ double pol=1; // Polarization type: 1 for 'Horz.' or 0 for 'Vert.'
 
 // source parameters
 double source_height = 30.0;
-double gamma_horiz=5*M_PI/180; //elv
+double gamma_horiz=7*M_PI/180; //elv
 double gamma_rastvor=2*M_PI/180; //bw
 double a_0 = 1.2e-6;
 double source_frequency = 3.e9;
@@ -272,7 +272,7 @@ int main() {
 
 
 
-    file = fopen("looyenga_TEST_satellite_100_3ghz_new5.txt", "w+");
+    file = fopen("looyenga_TEST_satellite_100_3ghz_new7.txt", "w+");
 
     if (file == NULL) {
         printf("FileIsNull\n");
