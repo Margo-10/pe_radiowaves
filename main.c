@@ -11,13 +11,13 @@
 //SYSTEM SI
 int N_z=16810;
 int N_x=7500;
-double x_begin=0,x_end=3000.0, z_begin=0,z_end=100000.0;
+double x_begin=0,x_end=2000.0, z_begin=0,z_end=40000.0;
 double n_0 = 1.00028;
 double pol=1; // Polarization type: 1 for 'Horz.' or 0 for 'Vert.'
 
 // source parameters
 double source_height = 30.0;
-double gamma_horiz=7*M_PI/180; //elv
+double gamma_horiz=14*M_PI/180; //elv
 double gamma_rastvor=2*M_PI/180; //bw
 double a_0 = 1.2e-6;
 double source_frequency = 3.e9;
@@ -272,7 +272,7 @@ int main() {
 
 
 
-    file = fopen("looyenga_TEST_satellite_100_3ghz_new7.txt", "w+");
+    file = fopen("looyenga_TEST_satellite_100_3ghz_new14.txt", "w+");
 
     if (file == NULL) {
         printf("FileIsNull\n");
