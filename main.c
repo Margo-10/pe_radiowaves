@@ -9,18 +9,18 @@
 
 
 //SYSTEM SI
-int N_z=16810;
-int N_x=7500;
-double x_begin=0,x_end=2000.0, z_begin=0,z_end=40000.0;
+int N_z=25000;
+int N_x=10000;
+double x_begin=0,x_end=800.0, z_begin=0,z_end=50000.0;
 double n_0 = 1.00028;
 double pol=1; // Polarization type: 1 for 'Horz.' or 0 for 'Vert.'
 
 // source parameters
 double source_height = 30.0;
-double gamma_horiz=10*M_PI/180; //elv
+double gamma_horiz=14*M_PI/180; //elv
 double gamma_rastvor=2*M_PI/180; //bw
 double a_0 = 1.2e-6;
-double source_frequency = 3.e9;
+double source_frequency = 10.e9;
 //complex double eps_1 = 4.56+I*0.251;
 double b=0.28;
 double rho=2440.0;
@@ -282,7 +282,7 @@ int main() {
     for (int i = 0; i<N_z; i++) {
         for (int j = 0; j<N_x; j++){
             double current_z = z_begin + dz * i;
-            fprintf(file, "%1.7e ", cabs(array_u[i][j]));
+            fprintf(file, "%1.6e ", cabs(array_u[i][j]));
             //fprintf(file, "%1.13e ", -20*log(cabs(array_u[i][j]))+ 20*log(4*M_PI) + 10*log(current_z)-30*log(3.e8/source_frequency));
         }
 
