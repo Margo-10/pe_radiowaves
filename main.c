@@ -28,12 +28,14 @@ double rho=2440.0;
 //visibility
 double V_0 = 6.5; //meters
 double h_0 = 2.0;
+
+
 double V = 30;
 
 //for Libya and Sudan
 double gamma_ = 1.07;
 double C_ = 2.3*1.e-2;
-double Humidity = 40;
+double Humidity = 60;
 
 
 //standard
