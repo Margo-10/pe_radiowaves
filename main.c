@@ -9,18 +9,18 @@
 
 
 //SYSTEM SI
-int N_z=25000;
-int N_x=10000;
+int N_z=8500;
+int N_x=2000;
 double x_begin=0,x_end=800.0, z_begin=0,z_end=50000.0;
 double n_0 = 1.00028;
 double pol=1; // Polarization type: 1 for 'Horz.' or 0 for 'Vert.'
 
 // source parameters
 double source_height = 30.0;
-double gamma_horiz=14*M_PI/180; //elv
+double gamma_horiz=0*M_PI/180; //elv
 double gamma_rastvor=2*M_PI/180; //bw
 double a_0 = 1.2e-6;
-double source_frequency = 10.e9;
+double source_frequency = 3.e9;
 //complex double eps_1 = 4.56+I*0.251;
 double b=0.28;
 double rho=2440.0;
@@ -30,12 +30,12 @@ double V_0 = 6.5; //meters
 double h_0 = 2.0;
 
 
-double V = 100;
+double V = 10;
 
 //for Libya and Sudan
 double gamma_ = 1.07;
 double C_ = 2.3*1.e-2;
-double Humidity = 20;
+double Humidity = 0;
 
 
 //standard
@@ -54,7 +54,7 @@ void looyeng_model(complex double* eps, complex double* refractive_index, comple
 //        phi_1[l] = C_*pow(h_0/current_x,b)/(rho*pow(V_0,gamma_));
 
 
-    phi_1[l] =  C_/(pow(V, gamma_)*rho);
+    phi_1[l] = C_/(pow(V, gamma_)*rho);
     eps[l] = cpow((phi_1[l]*(cpow(eps_1,1.0/3.0)-cpow(refractive_index[l],1.0/3.0)) + cpow(refractive_index[l],1.0/3.0)), 3); //it is square refractive index n^2
 }
 
@@ -257,32 +257,30 @@ int main() {
 
     }
 
-//    //double max_k = 0;
+//    double max_k = 0;
 //    for (int k = 0; k < N_z; k++) {
-//        for (int h = 0; h < N_x; h++) {
-//            double current_value = cabs(array_u[k][h_max]);
+//            double current_value = cabs(array_u[k][1]);
 //            if (current_value > U_up) {
 //                U_up = current_value;
 //                //max_k = k;
-//            }
 //        }
 //    }
 //    //max_k = z_begin + dz * max_k;
 //    printf(": %f ",U_up); //Расстояние: %f grbg %fmax_k, maximum_u
+//
 
 
-
-    file = fopen("looyenga_TEST_satellite_100_3ghz_new14.txt", "w+");
+    file = fopen("10v_h0_0tilt.txt", "w+");
 
     if (file == NULL) {
         printf("FileIsNull\n");
         return 1;
     }
 
-    for (int i = 0; i<N_z; i++) {
-        for (int j = 0; j<N_x; j++){
+    for (int i = 1; i<N_z; i++) {
+        for (int j = 0; j<1; j++){
             double current_z = z_begin + dz * i;
-            fprintf(file, "%1.6e ", cabs(array_u[i][j]));
+            fprintf(file, "%1.6e ", cabs(array_u[i][1]));
             //fprintf(file, "%1.13e ", -20*log(cabs(array_u[i][j]))+ 20*log(4*M_PI) + 10*log(current_z)-30*log(3.e8/source_frequency));
         }
 
