@@ -9,15 +9,15 @@
 
 
 //SYSTEM SI
-int N_z=20000;
-int N_x=7000;
-double x_begin=0,x_end=800.0, z_begin=0,z_end=50000.0;
+int N_z=12000;
+int N_x=23400;
+double x_begin=0,x_end=2700.0, z_begin=0,z_end=30000.0;
 double n_0 = 1.00028;
 double pol=1; // Polarization type: 1 for 'Horz.' or 0 for 'Vert.'
 
 // source parameters
 double source_height = 30.0;
-double gamma_horiz=0*M_PI/180; //elv
+double gamma_horiz=5*M_PI/180; //elv
 double gamma_rastvor=2*M_PI/180; //bw
 double a_0 = 1.2e-6;
 double source_frequency = 10.e9;
@@ -30,12 +30,12 @@ double V_0 = 6.5; //meters
 double h_0 = 2.0;
 
 
-double V = 30;
+double V = 20;
 
 //for Libya and Sudan
 double gamma_ = 1.07;
 double C_ = 2.3*1.e-2;
-double Humidity = 20;
+double Humidity = 0;
 
 
 //standard
@@ -257,38 +257,50 @@ int main() {
 
     }
 
+
 //    double max_k = 0;
-//    for (int k = 0; k < N_z; k++) {
-//            double current_value = cabs(array_u[k][1]);
-//            if (current_value > U_up) {
-//                U_up = current_value;
-//                //max_k = k;
+//    for (int k = 0; k < N_x; k++) {
+//        double current_value = cabs(array_u[11999][k]);
+//        if (current_value > U_up) {
+//            U_up = current_value;
+//            max_k = k;
 //        }
 //    }
 //    //max_k = z_begin + dz * max_k;
-//    printf(": %f ",U_up); //Расстояние: %f grbg %fmax_k, maximum_u
+//    printf(": %f :%f",U_up, max_k); //Расстояние: %f grbg %fmax_k, maximum_u
 
-
-
-    file = fopen("field10ghz_vid30_h20_0tilt_NEW.txt", "w+");
-
-    if (file == NULL) {
-        printf("FileIsNull\n");
-        return 1;
-    }
-
-    for (int i = 1; i<N_z; i++) {
-        for (int j = 0; j<1; j++){
-            double current_z = z_begin + dz * i;
-            fprintf(file, "%1.6e ", cabs(array_u[i][1]));
-            //fprintf(file, "%1.13e ", -20*log(cabs(array_u[i][j]))+ 20*log(4*M_PI) + 10*log(current_z)-30*log(3.e8/source_frequency));
+    double max_k = 0;
+    for (int k = 0; k < N_x; k++) {
+            double current_value = cabs(array_u[11999][k]);
+            if (current_value > U_up) {
+                U_up = current_value;
+                max_k = k;
         }
-
-        fprintf(file,"\n");
     }
+    //max_k = z_begin + dz * max_k;
+    printf(": %f :%f",U_up, max_k); //Расстояние: %f grbg %fmax_k, maximum_u
 
-
-    fclose(file);
+//
+//
+//    file = fopen("field10ghz_satellite_5tilt_30vid_20hum.txt", "w+");
+//
+//    if (file == NULL) {
+//        printf("FileIsNull\n");
+//        return 1;
+//    }
+//
+//    for (int i = 0; i<N_z; i++) {
+//        for (int j = 0; j<N_x; j++){
+//            double current_z = z_begin + dz * i;
+//            fprintf(file, "%1.6e ", cabs(array_u[i][j]));
+//            //fprintf(file, "%1.13e ", -20*log(cabs(array_u[i][j]))+ 20*log(4*M_PI) + 10*log(current_z)-30*log(3.e8/source_frequency));
+//        }
+//
+//        fprintf(file,"\n");
+//    }
+//
+//
+//    fclose(file);
 
 
     for (int i = 0; i < N_z; i++) {
