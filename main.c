@@ -30,12 +30,12 @@ double V_0 = 6.5; //meters
 double h_0 = 2.0;
 
 
-double V = 30;
+double V = 6.5;
 
 //for Libya and Sudan
 double gamma_ = 1.07;
 double C_ = 2.3*1.e-2;
-double Humidity = 0;
+double Humidity = 20;
 
 
 //standard
@@ -270,7 +270,7 @@ int main() {
 
 
 
-    file = fopen("field10ghz_vid30_h0_0tilt.txt", "w+");
+    file = fopen("field10ghz_vid6.5_h20_0tilt.txt", "w+");
 
     if (file == NULL) {
         printf("FileIsNull\n");
