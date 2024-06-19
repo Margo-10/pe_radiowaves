@@ -9,8 +9,8 @@
 
 
 //SYSTEM SI
-int N_z=8500;
-int N_x=2000;
+int N_z=20000;
+int N_x=7000;
 double x_begin=0,x_end=800.0, z_begin=0,z_end=50000.0;
 double n_0 = 1.00028;
 double pol=1; // Polarization type: 1 for 'Horz.' or 0 for 'Vert.'
@@ -20,7 +20,7 @@ double source_height = 30.0;
 double gamma_horiz=0*M_PI/180; //elv
 double gamma_rastvor=2*M_PI/180; //bw
 double a_0 = 1.2e-6;
-double source_frequency = 3.e9;
+double source_frequency = 10.e9;
 //complex double eps_1 = 4.56+I*0.251;
 double b=0.28;
 double rho=2440.0;
@@ -30,12 +30,12 @@ double V_0 = 6.5; //meters
 double h_0 = 2.0;
 
 
-double V = 10;
+double V = 30;
 
 //for Libya and Sudan
 double gamma_ = 1.07;
 double C_ = 2.3*1.e-2;
-double Humidity = 0;
+double Humidity = 20;
 
 
 //standard
@@ -270,17 +270,17 @@ int main() {
 //
 
 
-    file = fopen("10v_h0_0tilt.txt", "w+");
+    file = fopen("field10ghz_vid30_h20_0tilt.txt", "w+");
 
     if (file == NULL) {
         printf("FileIsNull\n");
         return 1;
     }
 
-    for (int i = 1; i<N_z; i++) {
-        for (int j = 0; j<1; j++){
+    for (int i = 0; i<N_z; i++) {
+        for (int j = 0; j<N_x; j++){
             double current_z = z_begin + dz * i;
-            fprintf(file, "%1.6e ", cabs(array_u[i][1]));
+            fprintf(file, "%1.6e ", cabs(array_u[i][j]));
             //fprintf(file, "%1.13e ", -20*log(cabs(array_u[i][j]))+ 20*log(4*M_PI) + 10*log(current_z)-30*log(3.e8/source_frequency));
         }
 
