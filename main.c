@@ -35,7 +35,7 @@ double V = 30;
 //for Libya and Sudan
 double gamma_ = 1.07;
 double C_ = 2.3*1.e-2;
-double Humidity = 20;
+double Humidity = 0;
 
 
 //standard
@@ -267,20 +267,20 @@ int main() {
 //    }
 //    //max_k = z_begin + dz * max_k;
 //    printf(": %f ",U_up); //Расстояние: %f grbg %fmax_k, maximum_u
-//
 
 
-    file = fopen("field10ghz_vid30_h20_0tilt.txt", "w+");
+
+    file = fopen("field10ghz_vid30_h0_0tilt.txt", "w+");
 
     if (file == NULL) {
         printf("FileIsNull\n");
         return 1;
     }
 
-    for (int i = 0; i<N_z; i++) {
-        for (int j = 0; j<N_x; j++){
+    for (int i = 1; i<N_z; i++) {
+        for (int j = 0; j<1; j++){
             double current_z = z_begin + dz * i;
-            fprintf(file, "%1.6e ", cabs(array_u[i][j]));
+            fprintf(file, "%1.6e ", cabs(array_u[i][1]));
             //fprintf(file, "%1.13e ", -20*log(cabs(array_u[i][j]))+ 20*log(4*M_PI) + 10*log(current_z)-30*log(3.e8/source_frequency));
         }
 
