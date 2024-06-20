@@ -30,12 +30,12 @@ double V_0 = 6.5; //meters
 double h_0 = 2.0;
 
 
-double V = 20;
+double V = 10;
 
 //for Libya and Sudan
 double gamma_ = 1.07;
 double C_ = 2.3*1.e-2;
-double Humidity = 40;
+double Humidity = 0;
 
 
 //standard
@@ -54,7 +54,7 @@ void looyeng_model(complex double* eps, complex double* refractive_index, comple
 //        phi_1[l] = C_*pow(h_0/current_x,b)/(rho*pow(V_0,gamma_));
 
 
-    phi_1[l] = C_/(pow(V, gamma_)*rho);
+    phi_1[l] =  C_/(pow(V, gamma_)*rho);
     eps[l] = cpow((phi_1[l]*(cpow(eps_1,1.0/3.0)-cpow(refractive_index[l],1.0/3.0)) + cpow(refractive_index[l],1.0/3.0)), 3); //it is square refractive index n^2
 }
 
@@ -258,16 +258,16 @@ int main() {
     }
 
 
-//    double max_k = 0;
-//    for (int k = 0; k < N_z; k++) {
-//            double current_value = cabs(array_u[5102][2900]);
-//            if (current_value > U_up) {
-//                U_up = current_value;
+    double max_k = 0;
+    for (int k = 0; k < N_x; k++) {
+            double current_value = cabs(array_u[5102][k]);
+            if (current_value > U_up) {
+                U_up = current_value;
 //                max_k = k;
-//        }
-//    }
+        }
+    }
     //max_k = z_begin + dz * max_k;
-    printf(": %f",cabs(array_u[5102][2900])); //Расстояние: %f grbg %fmax_k, maximum_u
+    printf(": %f",U_up); //Расстояние: %f grbg %fmax_k, maximum_u
 
 
 //
