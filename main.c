@@ -9,8 +9,8 @@
 
 
 //SYSTEM SI
-int N_z=12000;
-int N_x=23400;
+int N_z=5103;
+int N_x=6750;
 double x_begin=0,x_end=2700.0, z_begin=0,z_end=30000.0;
 double n_0 = 1.00028;
 double pol=1; // Polarization type: 1 for 'Horz.' or 0 for 'Vert.'
@@ -20,7 +20,7 @@ double source_height = 30.0;
 double gamma_horiz=5*M_PI/180; //elv
 double gamma_rastvor=2*M_PI/180; //bw
 double a_0 = 1.2e-6;
-double source_frequency = 10.e9;
+double source_frequency = 3.e9;
 //complex double eps_1 = 4.56+I*0.251;
 double b=0.28;
 double rho=2440.0;
@@ -30,7 +30,7 @@ double V_0 = 6.5; //meters
 double h_0 = 2.0;
 
 
-double V = 6.5;
+double V = 30;
 
 //for Libya and Sudan
 double gamma_ = 1.07;
@@ -54,7 +54,7 @@ void looyeng_model(complex double* eps, complex double* refractive_index, comple
 //        phi_1[l] = C_*pow(h_0/current_x,b)/(rho*pow(V_0,gamma_));
 
 
-    phi_1[l] = 0;//C_/(pow(V, gamma_)*rho);
+    phi_1[l] = C_/(pow(V, gamma_)*rho);
     eps[l] = cpow((phi_1[l]*(cpow(eps_1,1.0/3.0)-cpow(refractive_index[l],1.0/3.0)) + cpow(refractive_index[l],1.0/3.0)), 3); //it is square refractive index n^2
 }
 
@@ -258,20 +258,9 @@ int main() {
     }
 
 
-//    double max_k = 0;
-//    for (int k = 0; k < N_x; k++) {
-//        double current_value = cabs(array_u[11999][k]);
-//        if (current_value > U_up) {
-//            U_up = current_value;
-//            max_k = k;
-//        }
-//    }
-//    //max_k = z_begin + dz * max_k;
-//    printf(": %f :%f",U_up, max_k); //Расстояние: %f grbg %fmax_k, maximum_u
-
     double max_k = 0;
     for (int k = 0; k < N_x; k++) {
-            double current_value = cabs(array_u[11999][k]);
+            double current_value = cabs(array_u[5102][k]);
             if (current_value > U_up) {
                 U_up = current_value;
                 max_k = k;
@@ -280,9 +269,9 @@ int main() {
     //max_k = z_begin + dz * max_k;
     printf(": %f :%f",U_up, max_k); //Расстояние: %f grbg %fmax_k, maximum_u
 
+
 //
-//
-//    file = fopen("field10ghz_satellite_5tilt_30vid_20hum.txt", "w+");
+//    file = fopen("field3ghz_satellite_5tilt_30vid_20hum.txt", "w+");
 //
 //    if (file == NULL) {
 //        printf("FileIsNull\n");
