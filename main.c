@@ -30,12 +30,12 @@ double V_0 = 6.5; //meters
 double h_0 = 2.0;
 
 
-double V = 6.5;
+double V = 20;
 
 //for Libya and Sudan
 double gamma_ = 1.07;
 double C_ = 2.3*1.e-2;
-double Humidity = 20;
+double Humidity = 40;
 
 
 //standard
@@ -54,7 +54,7 @@ void looyeng_model(complex double* eps, complex double* refractive_index, comple
 //        phi_1[l] = C_*pow(h_0/current_x,b)/(rho*pow(V_0,gamma_));
 
 
-    phi_1[l] = 0;//C_/(pow(V, gamma_)*rho);
+    phi_1[l] = C_/(pow(V, gamma_)*rho);
     eps[l] = cpow((phi_1[l]*(cpow(eps_1,1.0/3.0)-cpow(refractive_index[l],1.0/3.0)) + cpow(refractive_index[l],1.0/3.0)), 3); //it is square refractive index n^2
 }
 
