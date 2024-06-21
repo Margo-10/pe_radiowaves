@@ -9,7 +9,7 @@
 
 
 //SYSTEM SI
-int N_z=5103;
+int N_z=6000;
 int N_x=6750;
 double x_begin=0,x_end=2700.0, z_begin=0,z_end=30000.0;
 double n_0 = 1.00028;
@@ -30,12 +30,12 @@ double V_0 = 6.5; //meters
 double h_0 = 2.0;
 
 
-double V = 60;
+double V = 100;
 
 //for Libya and Sudan
 double gamma_ = 1.07;
 double C_ = 2.3*1.e-2;
-double Humidity = 60;
+double Humidity = 40;
 
 
 //standard
@@ -260,14 +260,14 @@ int main() {
 
     double max_k = 0;
     for (int k = 0; k < N_x; k++) {
-            double current_value = cabs(array_u[5102][k]);
+            double current_value = cabs(array_u[5999][9922]);
             if (current_value > U_up) {
                 U_up = current_value;
-//                max_k = k;
+                max_k = k;
         }
     }
-    //max_k = z_begin + dz * max_k;
-    printf(": %f",U_up); //Расстояние: %f grbg %fmax_k, maximum_u
+    max_k = z_begin + dz * max_k;
+    printf(": %f :%f  ",U_up, max_k); //Расстояние: %f grbg %fmax_k, maximum_u
 
 
 //
