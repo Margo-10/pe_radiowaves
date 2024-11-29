@@ -1,0 +1,31 @@
+1000           /* N_x (number of grid nodes along the x-axis) */
+10000          /* N_z (number of grid nodes along the z-axis) */
+0.0           /* x_begin (start x-coordinate) */
+500.0         /* x_end (end x-coordinate) */
+0.0           /* z_begin (start z-coordinate) */
+3000.0         /* z_end (end z-coordinate)*/
+1.00028       /* n_0 (refractive index)*/
+1.0             /* pol (Polarization type)*/
+300.0          /* source_height (height of the source)*/
+5.0           /* gamma_elv (elevation angle)*/
+0.5           /* gamma_beamwidth (beamwidth angle)*/
+1.2e-6       /* a_0 (coefficient for duct model)*/
+3.0e8        /* source_frequency (frequency of the source)*/
+0.28          /* b (constant in the formula for phi(h))*/
+2440.0        /* rho (density of substance dust particles)*/
+6.5           /* V_0 (visibility at h_0)*/
+2.0           /* h_0 (reference height)*/
+100.0           /* V (specified visibility)*/
+1.07          /* gamma (constant in the formula for phi)*/
+2.3e-2        /* C_ (constant in the formula for phi)*/
+40.0          /* H (specified Humidity)*/
+6.1121        /* a (constant in the formula for the vapor pressure e)*/
+18.678        /* b_e (constant in the formula for the vapor pressure e)*/
+257.14        /* c (constant in the formula for the vapor pressure e)*/
+234.5         /* d (constant in the formula for the vapor pressure e)*/
+20.0          /* t (temperature in celsius)*/
+1013.25       /* p_0 (pressure at altitude h_sea in hPa)*/
+9.81          /* g (acceleration of gravity)*/
+8.31          /* R (universal gas constant)*/
+0.02897       /* M (molar mass of air)*/
+0.0           /* h_sea (sea ​​level height)*/
